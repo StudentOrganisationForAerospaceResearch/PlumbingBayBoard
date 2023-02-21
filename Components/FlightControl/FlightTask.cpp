@@ -63,11 +63,11 @@ void FlightTask::Run(void * pvParams)
     GPIO::LED1::Off();
 //    motorPWMTask();
     HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
-    htim8.Instance->CCR4 = 50;
+    htim8.Instance->CCR4 = 103;
     while (1) {
-      htim8.Instance->CCR4 = 250; //55
-	  osDelay(5000);
-	  htim8.Instance->CCR4 = 50;
-	  osDelay(5000);
+      htim8.Instance->CCR4 = 50; //55
+	  osDelay(10000);
+	  htim8.Instance->CCR4 = 103;
+	  osDelay(10000);
     }
 }
