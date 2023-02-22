@@ -15,8 +15,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "ThermocoupleTask.hpp"
+
 #include "main.h"
-#include "Data.h"
 #include "DebugTask.hpp"
 #include "Task.hpp"
 
@@ -26,6 +26,9 @@
 /* Structs -------------------------------------------------------------------*/
 
 /* Constants -----------------------------------------------------------------*/
+
+/* Values should not be modified, non-const due to HAL and C++ strictness) ---*/
+constexpr int CMD_TIMEOUT = 150; //TODO: Taken from IMU not sure if it needs to be different
 
 /* Variables -----------------------------------------------------------------*/
 
@@ -44,7 +47,7 @@ ThermocoupleTask::ThermocoupleTask() : Task(TASK_THERMOCOUPLE_QUEUE_DEPTH_OBJS)
 /**
  * @brief Creates a task for the FreeRTOS Scheduler
  */
-void ThermocoupleTask::InitTask() //ETHAN NOTE: IDK IF WE ARE STILL DOING THIS
+void ThermocoupleTask::InitTask() //TODO: ETHAN NOTE: IDK IF WE ARE STILL DOING THIS
 {
     // Make sure the task is not already initialized
     SOAR_ASSERT(rtTaskHandle == nullptr, "Cannot initialize Thermocouple task twice");
@@ -123,8 +126,9 @@ void ThermocoupleTask::HandleRequestCommand(uint16_t taskCommand)
         SOAR_PRINT("Stubbed: Thermocouple task transmit not implemented\n");
         break;
     case THERMOCOUPLE_REQUEST_DEBUG: //Temporary data debug sender
-        SOAR_PRINT("\t-- Barometer Data --\n");
-        break;s
+        SOAR_PRINT("\t-- Thermocouple Data --\n");
+        ConvertTempuatureData();
+        break;
     default:
         SOAR_PRINT("UARTTask - Received Unsupported REQUEST_COMMAND {%d}\n", taskCommand);
         break;
@@ -137,12 +141,121 @@ void ThermocoupleTask::HandleRequestCommand(uint16_t taskCommand)
 
 void ThermocoupleTask::SampleThermocouple()
 {
+	/*DATA FROM MAX31855KASA+T ------------------------------------------------------
+
+	32 bits Memory Map
+
+		D31-D18 : Thermocoupler Temperature Data
+
+			D31 : Sign bit
+
+			D30-D18 : Temperature Value (2's complement) from 2^10 to 2^-2
+
+		D17 : Reserved Bit
+
+		D16 : Fault (if high shows fault is detected, more specific fault messages at D2 - D0)
+
+		D15-D4 :  Internal Temperature Data (reference junction temperature)
+
+			D15 : Sign bit
+
+			D14-D4 : Temperature Value (2's complement) from 2^6 to 2^-4
+
+		D3 : Reserved
+
+		D2-D0 : Fault Detection Bits
+
+			D2 : SCV Fault (displays high if TC shorts to Vcc)
+
+			D1 : SCG Fault (displays high if TC shorts to GND)
+
+			D0 : Thermocouple has no Connection (displays high)
+
+	*///------------------------------------------------------------------------------
 
 
+	//Storable Data ------------------------------------------------------------------------------
+
+	uint8_t dataBuffer[4];
+	//See Above bit mem-map
+
+	//Read ---------------------------------------------------------------------------------------
+
+    //Read From Thermocouple 1 first
+	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
+	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple1, &dataBuffer[0], 4, CMD_TIMEOUT); //Fill the data buffer with data from TC1
+	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
 
 
+	TC1_Temp_Data = 0xffff & ((dataBuffer[3] << 6) | (dataBuffer[2] >> 2));
+
+	TC1_Internal_Temp_Data = 0xffff & ((dataBuffer[1] << 4) | (dataBuffer[0] >> 4));
+
+	TC1_faultBits = 0xff & (((2 << 4) - 1 ) & ((dataBuffer[2] << 3) & (2 << 1)| ((dataBuffer[0]) & ((2<<2)-1))));
+	// (dataBuffer[2] << 3) : this puts D16 from the SPI into D3 of the faultBits variable
+	// &(2 << 1) : prunes unwanted surrounding highs
+	// | ((dataBuffer[0]) & ((2<<2)-1)) : this or adds only the last 3 bits from the dataBuffer
+	// (2 << 4) - 1 : acts as a filter to ensure bits 7-4 are 0
+
+
+	//Read From Thermocouple 1 first
+	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
+	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple1, &dataBuffer[0], 4, CMD_TIMEOUT); //Fill the data buffer with data from TC1
+	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
+
+
+	TC2_Temp_Data = 0xffff & ((dataBuffer[3] << 6) | (dataBuffer[2] >> 2));
+
+	TC2_Internal_Temp_Data = 0xffff & ((dataBuffer[1] << 4) | (dataBuffer[0] >> 4));
+
+	TC2_faultBits = 0xff & (((2 << 4) - 1 ) & ((dataBuffer[2] << 3) & (2 << 1)| ((dataBuffer[0]) & ((2<<2)-1))));
 
 }
+
+void ThermocoupleTask::ConvertTempuatureData()
+{
+	double TC1_temperature;
+	double TC2_temperature;
+
+	uint16_t dataBits = TC1_Temp_Data & 0x1fff; //filters out only the data bits
+	bool signBit = (TC1_Temp_Data & 0x2000) == 0x2000; //true if sign bit is on
+
+	//Calculate the actual temperature value using two's complement if needed
+	if(!signBit){
+		TC1_temperature = (double)dataBits/4.0;
+	} else {
+		dataBits = (~dataBits) + 1;
+		TC1_temperature = -1 * (double)dataBits/4.0;
+	}
+
+	SOAR_PRINT("\t-- The temp read by TC1 is %f --\n", TC1_temperature);
+
+
+
+	 dataBits = TC2_Temp_Data & 0x1fff;
+	 signBit = (TC2_Temp_Data & 0x2000) == 0x2000;
+
+
+	if(!signBit){
+			TC2_temperature = (double)dataBits/4.0;
+		} else {
+			dataBits = (~dataBits) + 1;
+			TC2_temperature = -1 * (double)dataBits/4.0;
+		}
+
+	SOAR_PRINT("\t-- The temp read by TC2 is %f --\n", TC2_temperature);
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
