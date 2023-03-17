@@ -120,7 +120,7 @@ void PressureTransducerTask::HandleRequestCommand(uint16_t taskCommand)
         break;
     case PT_REQUEST_DEBUG:
         SOAR_PRINT("\t-- Pressure Transducer Data --\n");
-        SOAR_PRINT(" Pressure (psi): %d.%d\n", data->pressure_);
+        SOAR_PRINT(" Pressure (psi): %lld.%lld\n", data->pressure_ / 1000, data->pressure_ % 1000);
         break;
     default:
         SOAR_PRINT("UARTTask - Received Unsupported REQUEST_COMMAND {%d}\n", taskCommand);
@@ -134,23 +134,19 @@ void PressureTransducerTask::HandleRequestCommand(uint16_t taskCommand)
  */
 void PressureTransducerTask::SamplePressureTransducer()
 {
-	static int READ_PT_VOLTAGE_PERIOD = 50;
 	static const int PT_VOLTAGE_ADC_POLL_TIMEOUT = 50;
-	static const double PRESSURE_SCALE = 1.522088353;
-	double pTVoltageValue = 0;
+	static const double PRESSURE_SCALE = 1.5220883534136546; // Value to scale to original voltage value
+	double adcVal = 0;
 	double pressureTransducerValue = 0;
+	double vi = 0;
 
 	/* Functions -----------------------------------------------------------------*/
 
 	HAL_ADC_Start(&hadc1);  // Enables ADC and starts conversion of regular channels
-
-	for (;;) {
-	        osDelay(READ_PT_VOLTAGE_PERIOD);
-
-		if (HAL_ADC_PollForConversion(&hadc1, PT_VOLTAGE_ADC_POLL_TIMEOUT) == HAL_OK) {
-			pTVoltageValue = HAL_ADC_GetValue(&hadc1);
-	    }
-		pressureTransducerValue = (250 * (pTVoltageValue * PRESSURE_SCALE) - 125);
-	    data->pressure_ = pressureTransducerValue;
-	}
+	if(HAL_ADC_PollForConversion(&hadc1, PT_VOLTAGE_ADC_POLL_TIMEOUT) == HAL_OK) { //Check if conversion is completed
+		adcVal = HAL_ADC_GetValue(&hadc1); // Get ADC Value
+		}
+	vi = ((3.3/4095) * adcVal); // Converts 12 bit ADC value into voltage
+	pressureTransducerValue = (250 * (vi * PRESSURE_SCALE) - 125) * 1000; // Multiply by 1000 to keep decimal places
+	data->pressure_ = (int32_t) pressureTransducerValue; // Pressure in PSI
 }
