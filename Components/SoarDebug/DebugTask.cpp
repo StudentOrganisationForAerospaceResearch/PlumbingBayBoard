@@ -13,6 +13,7 @@
 
 #include "FlightTask.hpp"
 #include "GPIO.hpp"
+#include "ServoTask.hpp"
 #include "stm32f4xx_hal.h"
 
 /* Macros --------------------------------------------------------------------*/
@@ -116,6 +117,18 @@ void DebugTask::HandleDebugMessage(const char* msg)
 		// Print message
 		SOAR_PRINT("Debug 'LED blink' command requested\n");
 		GPIO::LED1::On();
+		// TODO: Send to HID task to blink LED, this shouldn't delay
+	}
+	else if (strcmp(msg, "open") == 0) {
+		// Print message
+		SOAR_PRINT("Debug 'ServoOpen' Sample and Output Received\n");
+		ServoTask::Inst().SendCommand(Command(REQUEST_COMMAND, SERVO_OPEN));
+		// TODO: Send to HID task to blink LED, this shouldn't delay
+	}
+	else if (strcmp(msg, "close") == 0) {
+		// Print message
+		SOAR_PRINT("Debug 'ServoClose' Sample and Output Received\n");
+		ServoTask::Inst().SendCommand(Command(REQUEST_COMMAND, SERVO_CLOSE));
 		// TODO: Send to HID task to blink LED, this shouldn't delay
 	}
 	else {
