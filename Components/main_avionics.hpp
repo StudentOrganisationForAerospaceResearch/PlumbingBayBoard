@@ -34,7 +34,7 @@ extern UART_HandleTypeDef huart1;   // UART1 - Launch Systems  ... Confirm
 extern UART_HandleTypeDef huart2;   // UART2 - Logging (Radio)
 extern UART_HandleTypeDef huart4;   // UART4 - GPS
 extern UART_HandleTypeDef huart5;   // UART5 - Debug
-
+extern TIM_HandleTypeDef htim8;
 //ADC Handles
 extern ADC_HandleTypeDef hadc1;      // ADC1 - Pressure Transducer ADC
 
