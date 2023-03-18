@@ -45,14 +45,16 @@ void FlightTask::Run(void * pvParams)
     GPIO::LED1::Off();
     HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
     htim8.Instance->CCR4 = 103;
+//    HAL_UART_Receive(SystemHandles::UART_Conduit, &conduitRxChar, 1, HAL_MAX_DELAY);
+
     while (1) {
-    	//SOAR_PRINT("FlightTask::Run() - [%d] Seconds\n", tempSecondCounter++);
+//    	SOAR_PRINT("FlightTask::Run() - [%d] Seconds\n", tempSecondCounter++);
     	HAL_UART_Receive(SystemHandles::UART_Conduit, &conduitRxChar, 1, HAL_MAX_DELAY);
-    	SOAR_PRINT("Conduit recieved message - [%d] Seconds\n", conduitRxChar);
-    	if (conduitRxChar == 1) {
+    	SOAR_PRINT("Conduit recieved message - %c\n", conduitRxChar);
+    	if (conduitRxChar == '1') {
     		htim8.Instance->CCR4 = 50;
     	}
-    	if (conduitRxChar == 0) {
+    	if (conduitRxChar == '0') {
 			htim8.Instance->CCR4 = 103;
 		}
         // There's effectively 3 types of tasks... 'Async' and 'Synchronous-Blocking' and 'Synchronous-Non-Blocking'
