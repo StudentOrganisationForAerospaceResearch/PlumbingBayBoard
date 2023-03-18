@@ -43,11 +43,18 @@ void FlightTask::Run(void * pvParams)
 {
     uint32_t tempSecondCounter = 0; // TODO: Temporary counter, would normally be in HeartBeat task or HID Task, unless FlightTask is the HeartBeat task
     GPIO::LED1::Off();
-
+    HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
+    htim8.Instance->CCR4 = 103;
     while (1) {
     	//SOAR_PRINT("FlightTask::Run() - [%d] Seconds\n", tempSecondCounter++);
     	HAL_UART_Receive(SystemHandles::UART_Conduit, &conduitRxChar, 1, HAL_MAX_DELAY);
-    	SOAR_PRINT("Conduit recieved message - [%c] Seconds\n", conduitRxChar);
+    	SOAR_PRINT("Conduit recieved message - [%d] Seconds\n", conduitRxChar);
+    	if (conduitRxChar == 1) {
+    		htim8.Instance->CCR4 = 50;
+    	}
+    	if (conduitRxChar == 0) {
+			htim8.Instance->CCR4 = 103;
+		}
         // There's effectively 3 types of tasks... 'Async' and 'Synchronous-Blocking' and 'Synchronous-Non-Blocking'
         // Asynchronous tasks don't require a fixed-delay and can simply delay using xQueueReceive, it will immedietly run the next task
         // cycle as soon as it gets an event.
