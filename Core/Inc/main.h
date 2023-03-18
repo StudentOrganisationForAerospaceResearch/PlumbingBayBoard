@@ -59,6 +59,36 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define AUX_2_Pin GPIO_PIN_2
+#define AUX_2_GPIO_Port GPIOC
+#define AUX_1_Pin GPIO_PIN_3
+#define AUX_1_GPIO_Port GPIOC
+#define PT2_ADC_Pin GPIO_PIN_3
+#define PT2_ADC_GPIO_Port GPIOA
+#define PT1_ADC_Pin GPIO_PIN_5
+#define PT1_ADC_GPIO_Port GPIOC
+#define TC1_SPI_SCK_Pin GPIO_PIN_13
+#define TC1_SPI_SCK_GPIO_Port GPIOB
+#define TC1_SPI_MISO_Pin GPIO_PIN_14
+#define TC1_SPI_MISO_GPIO_Port GPIOB
+#define TC1_CS__Pin GPIO_PIN_15
+#define TC1_CS__GPIO_Port GPIOB
+#define SERVO_TIMER_Pin GPIO_PIN_9
+#define SERVO_TIMER_GPIO_Port GPIOC
+#define CONDUIT_TX_Pin GPIO_PIN_9
+#define CONDUIT_TX_GPIO_Port GPIOA
+#define CONDUIT_RX_Pin GPIO_PIN_10
+#define CONDUIT_RX_GPIO_Port GPIOA
+#define TC2_SPI_SCK_Pin GPIO_PIN_10
+#define TC2_SPI_SCK_GPIO_Port GPIOC
+#define TC2_SPI_MISO_Pin GPIO_PIN_11
+#define TC2_SPI_MISO_GPIO_Port GPIOC
+#define DEBUG_TX_Pin GPIO_PIN_12
+#define DEBUG_TX_GPIO_Port GPIOC
+#define DEBUG_RX_Pin GPIO_PIN_2
+#define DEBUG_RX_GPIO_Port GPIOD
+#define TC2_CS__Pin GPIO_PIN_4
+#define TC2_CS__GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

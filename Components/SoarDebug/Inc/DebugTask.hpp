@@ -54,6 +54,7 @@ protected:
 
 	uint8_t debugRxChar; // Character received from UART Interrupt
 
+
 private:
 	DebugTask(); // Private constructor
 	DebugTask(const DebugTask&);					// Prevent copy-construction

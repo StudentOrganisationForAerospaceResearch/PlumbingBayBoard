@@ -7,6 +7,7 @@
 #include "FlightTask.hpp"
 #include "GPIO.hpp"
 #include "SystemDefines.hpp"
+#include "DebugTask.hpp"
 
 /**
  * @brief Constructor for FlightTask
@@ -44,6 +45,9 @@ void FlightTask::Run(void * pvParams)
     GPIO::LED1::Off();
 
     while (1) {
+    	//SOAR_PRINT("FlightTask::Run() - [%d] Seconds\n", tempSecondCounter++);
+    	HAL_UART_Receive(SystemHandles::UART_Conduit, &conduitRxChar, 1, HAL_MAX_DELAY);
+    	SOAR_PRINT("Conduit recieved message - [%c] Seconds\n", conduitRxChar);
         // There's effectively 3 types of tasks... 'Async' and 'Synchronous-Blocking' and 'Synchronous-Non-Blocking'
         // Asynchronous tasks don't require a fixed-delay and can simply delay using xQueueReceive, it will immedietly run the next task
         // cycle as soon as it gets an event.
