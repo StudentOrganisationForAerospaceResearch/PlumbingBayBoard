@@ -19,6 +19,7 @@
 #include "Data.h"
 #include "DebugTask.hpp"
 #include "Task.hpp"
+#include <time.h>
 
 
 /* Macros --------------------------------------------------------------------*/
@@ -119,8 +120,10 @@ void PressureTransducerTask::HandleRequestCommand(uint16_t taskCommand)
         SOAR_PRINT("Stubbed: Pressure Transducer task transmit not implemented\n");
         break;
     case PT_REQUEST_DEBUG:
-        SOAR_PRINT("\t-- Pressure Transducer Data --\n");
-        SOAR_PRINT(" Pressure (psi): %lld.%lld\n", data->pressure_ / 1000, data->pressure_ % 1000);
+        //SOAR_PRINT("\t-- Pressure Transducer Data --\n");
+        SOAR_PRINT("|PT_TASK| Pressure (PSI): %d.%d, MCU Timestamp: %u\r\n", data->pressure_ / 1000, data->pressure_ % 1000,
+        timestampPT);
+        //SOAR_PRINT(" Pressure (psi): %d.%d\n", data->pressure_ / 1000, data->pressure_ % 1000);
         break;
     default:
         SOAR_PRINT("UARTTask - Received Unsupported REQUEST_COMMAND {%d}\n", taskCommand);
@@ -146,7 +149,8 @@ void PressureTransducerTask::SamplePressureTransducer()
 	if(HAL_ADC_PollForConversion(&hadc1, PT_VOLTAGE_ADC_POLL_TIMEOUT) == HAL_OK) { //Check if conversion is completed
 		adcVal = HAL_ADC_GetValue(&hadc1); // Get ADC Value
 		}
-	vi = ((3.3/4095) * adcVal); // Converts 12 bit ADC value into voltage
-	pressureTransducerValue = (250 * (vi * PRESSURE_SCALE) - 125) * 1000; // Multiply by 1000 to keep decimal places
+	vi = ((3.3/4095) * (adcVal)); // Converts 12 bit ADC value into voltage
+	pressureTransducerValue = (250 * ((vi * PRESSURE_SCALE) + 0.08) - 125) * 1000; // Multiply by 1000 to keep decimal places
 	data->pressure_ = (int32_t) pressureTransducerValue; // Pressure in PSI
+	timestampPT = HAL_GetTick();
 }
