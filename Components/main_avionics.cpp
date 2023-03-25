@@ -18,7 +18,7 @@
 #include "UARTTask.hpp"
 #include "FlightTask.hpp"
 #include "DebugTask.hpp"
-
+#include "ThermocoupleTask.hpp"
 
 /* Global Variables ------------------------------------------------------------------*/
 Mutex Global::vaListMutex;
@@ -28,10 +28,12 @@ Mutex Global::vaListMutex;
  * @brief Main function interface, called inside main.cpp before os initialization takes place.
 */
 void run_main() {
+
 	// Init Tasks
 	FlightTask::Inst().InitTask();
 	UARTTask::Inst().InitTask();
 	DebugTask::Inst().InitTask();
+	ThermocoupleTask::Inst().InitTask();
 
 	// Print System Boot Info : Warning, don't queue more than 10 prints before scheduler starts
 	SOAR_PRINT("\n-- AVIONICS CORE --\n");

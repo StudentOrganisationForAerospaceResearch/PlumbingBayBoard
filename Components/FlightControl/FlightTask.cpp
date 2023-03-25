@@ -7,6 +7,7 @@
 #include "FlightTask.hpp"
 #include "GPIO.hpp"
 #include "SystemDefines.hpp"
+#include "ThermocoupleTask.hpp"
 
 /**
  * @brief Constructor for FlightTask
@@ -40,7 +41,7 @@ void FlightTask::InitTask()
  */
 void FlightTask::Run(void * pvParams)
 {
-    uint32_t tempSecondCounter = 0; // TODO: Temporary counter, would normally be in HeartBeat task or HID Task, unless FlightTask is the HeartBeat task
+    //uint32_t tempSecondCounter = 0; // TODO: Temporary counter, would normally be in HeartBeat task or HID Task, unless FlightTask is the HeartBeat task
     GPIO::LED1::Off();
 
     while (1) {
@@ -61,13 +62,17 @@ void FlightTask::Run(void * pvParams)
 
         // Since FlightTask is so critical to managing the system, it may make sense to make this a Async task that handles commands as they come in, and have these display commands be routed over to the DisplayTask
         // or maybe HID (Human Interface Device) task that handles both updating buzzer frequencies and LED states.
-        GPIO::LED1::On();
-        osDelay(500);
-        GPIO::LED1::Off();
-        osDelay(500);
+//        GPIO::LED1::On();
+//        osDelay(500);
+//        GPIO::LED1::Off();
+//        osDelay(500);
 
+    	osDelay(1000);
         //Every cycle, print something out (for testing)
-        SOAR_PRINT("FlightTask::Run() - [%d] Seconds\n", tempSecondCounter++);
+        //SOAR_PRINT("FlightTask::Run() - [%d] Seconds\n", tempSecondCounter++);
+        SOAR_PRINT("\nDebug 'Thermocouple' Sampling Temperature Reading\n");
+        ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_NEW_SAMPLE ));
+        //ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_DEBUG ));
 
         //osDelay(FLIGHT_PHASE_DISPLAY_FREQ);
 

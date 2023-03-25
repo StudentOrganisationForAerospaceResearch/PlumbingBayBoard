@@ -15,7 +15,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "ThermocoupleTask.hpp"
-
 #include "main.h"
 #include "DebugTask.hpp"
 #include "Task.hpp"
@@ -176,74 +175,165 @@ void ThermocoupleTask::SampleThermocouple()
 
 	//Storable Data ------------------------------------------------------------------------------
 
-	uint8_t dataBuffer[4];
+	uint8_t dataBuffer1[4];
 	//See Above bit mem-map
+
+	uint8_t Error1=0;// Thermocouple Connection acknowledge Flag
+	uint32_t sign1=0;
+	int Temp1=0;
 
 	//Read ---------------------------------------------------------------------------------------
 
     //Read From Thermocouple 1 first
 	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
-	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple1, &dataBuffer[0], 4, CMD_TIMEOUT); //Fill the data buffer with data from TC1
+	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple1, dataBuffer1, 4, 1000); //Fill the data buffer with data from TC1
 	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
 
+	SOAR_PRINT("------------1-------------\n");
 
-	TC1_Temp_Data = 0xffff & ((dataBuffer[3] << 6) | (dataBuffer[2] >> 2));
+	for(int i = 0; i<4; i++){
+		SOAR_PRINT("databufferTC1[%d] are: %d\n",i, dataBuffer1[i]);
+	}
+	SOAR_PRINT("\n");
 
-	TC1_Internal_Temp_Data = 0xffff & ((dataBuffer[1] << 4) | (dataBuffer[0] >> 4));
 
-	TC1_faultBits = 0xff & (((2 << 4) - 1 ) & ((dataBuffer[2] << 3) & (2 << 1)| ((dataBuffer[0]) & ((2<<2)-1))));
-	// (dataBuffer[2] << 3) : this puts D16 from the SPI into D3 of the faultBits variable
-	// &(2 << 1) : prunes unwanted surrounding highs
-	// | ((dataBuffer[0]) & ((2<<2)-1)) : this or adds only the last 3 bits from the dataBuffer
-	// (2 << 4) - 1 : acts as a filter to ensure bits 7-4 are 0
+	double temp_debug_1 = 0;
 
+	Error1=dataBuffer1[3]&0x07;								  // Error Detection
+	sign1=(dataBuffer1[0]&(0x80))>>7;							  // Sign Bit calculation
+
+	if(dataBuffer1[3] & 0x07){								  // Returns Error Number
+		temp_debug_1 = (-1*(dataBuffer1[3] & 0x07));
+	}
+	else if(sign1==1){									  // Negative Temperature
+		Temp1 = (dataBuffer1[0] << 6) | (dataBuffer1[1] >> 2);
+		Temp1&=0b01111111111111;
+		Temp1^=0b01111111111111;
+		temp_debug_1 = (double)-Temp1/4;
+	}
+	else												  // Positive Temperature
+	{
+		Temp1 = (dataBuffer1[0] << 6) | (dataBuffer1[1] >> 2);
+		temp_debug_1 = ((double)Temp1 / 4);
+	}
+
+	temp_debug_1 = temp_debug_1*100;
+	SOAR_PRINT(
+				"\t-- The new Temp as big number say its read by TC1 is %d \n"
+				, (int)temp_debug_1);
+
+	SOAR_PRINT("\t-- The new Temp say its read by TC1 is %d.%d C \n"
+			"-------------------------\n", (int)temp_debug_1/100, (uint8_t)(int)temp_debug_1%100);
+
+
+
+	uint8_t dataBuffer2[4];
+	//See Above bit mem-map
+
+	uint8_t Error2=0;// Thermocouple Connection acknowledge Flag
+	uint32_t sign2=0;
+	int Temp2=0;
+
+	//Read ---------------------------------------------------------------------------------------
 
 	//Read From Thermocouple 1 first
 	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
-	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple1, &dataBuffer[0], 4, CMD_TIMEOUT); //Fill the data buffer with data from TC1
+	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple2, dataBuffer2, 4, 1000); //Fill the data buffer with data from TC1
 	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
 
 
-	TC2_Temp_Data = 0xffff & ((dataBuffer[3] << 6) | (dataBuffer[2] >> 2));
+	SOAR_PRINT("------------2-------------\n");
 
-	TC2_Internal_Temp_Data = 0xffff & ((dataBuffer[1] << 4) | (dataBuffer[0] >> 4));
+	for(int i = 0; i<4; i++){
+		SOAR_PRINT("databufferTC2[%d] are: %d\n",i, dataBuffer2[i]);
+	}
+	SOAR_PRINT("\n");
 
-	TC2_faultBits = 0xff & (((2 << 4) - 1 ) & ((dataBuffer[2] << 3) & (2 << 1)| ((dataBuffer[0]) & ((2<<2)-1))));
+
+	double temp_debug_2 = 0;
+
+	Error2=dataBuffer2[3]&0x07;								  // Error Detection
+	sign2=(dataBuffer2[0]&(0x80))>>7;							  // Sign Bit calculation
+
+	if(dataBuffer2[3] & 0x07){								  // Returns Error Number
+		temp_debug_2 = (-1*(dataBuffer2[3] & 0x07));
+	}
+	else if(sign2==1){									  // Negative Temperature
+		Temp2 = (dataBuffer2[0] << 6) | (dataBuffer2[1] >> 2);
+		Temp2&=0b01111111111111;
+		Temp2^=0b01111111111111;
+		temp_debug_2 = (double)-Temp2/4;
+	}
+	else												  // Positive Temperature
+	{
+		Temp2 = (dataBuffer2[0] << 6) | (dataBuffer2[1] >> 2);
+		temp_debug_2 = ((double)Temp2 / 4);
+	}
+
+	temp_debug_2 = temp_debug_2*100;
+	SOAR_PRINT(
+				"\tThe new Temp as big number say its read by TC2 is %d \n", (int)temp_debug_2);
+
+	SOAR_PRINT("\tThe new Temp say its read by TC2 is %d.%d C \n"
+			"-------------------------\n", (int)temp_debug_2/100, (uint8_t)(int)temp_debug_2%100);
 
 }
 
 void ThermocoupleTask::ConvertTempuatureData()
 {
 	double TC1_temperature;
+
+	int16_t TC1_temp_int;
+	uint16_t TC1_temp_decimal;
+
 	double TC2_temperature;
 
-	uint16_t dataBits = TC1_Temp_Data & 0x1fff; //filters out only the data bits
-	bool signBit = (TC1_Temp_Data & 0x2000) == 0x2000; //true if sign bit is on
+	int16_t TC2_temp_int;
+	uint16_t TC2_temp_decimal;
 
+	uint16_t dataBits = TC1_Temp_Data & 0x1fff; //filters out only the data bits
+	int signBit = (TC1_Temp_Data & 0x2000); //true if sign bit is on
+	SOAR_PRINT("The OG data bits are: %d\n", dataBits);
+	SOAR_PRINT("The sign data bits are: %d\n", signBit);
 	//Calculate the actual temperature value using two's complement if needed
-	if(!signBit){
-		TC1_temperature = (double)dataBits/4.0;
+
+	if(signBit == 0){
+		TC1_temperature = dataBits>>2;
+		TC1_temp_int =  0x07ff & (dataBits>>2);
+		TC1_temp_decimal = dataBits & 0x0003;
+
 	} else {
 		dataBits = (~dataBits) + 1;
 		TC1_temperature = -1 * (double)dataBits/4.0;
+		TC1_temp_int =  -(0x07ff & (dataBits>>2));
+		TC1_temp_decimal = dataBits & 0x0003;
 	}
 
-	SOAR_PRINT("\t-- The temp read by TC1 is %f --\n", TC1_temperature);
+
+	//TC1_temperature= TC1_temperature*100;
+	//SOAR_PRINT("The temp data is bits are: %d-------------- :)\n", TC1_temperature);
+	SOAR_PRINT("\t-- The temp read by TC1 is %d.%d \n", TC1_temp_int, TC1_temp_decimal);
 
 
 
-	 dataBits = TC2_Temp_Data & 0x1fff;
-	 signBit = (TC2_Temp_Data & 0x2000) == 0x2000;
+	dataBits = TC2_Temp_Data & 0x1fff;
+	signBit = (TC2_Temp_Data & 0x2000);
+	SOAR_PRINT("The OG data bits are: %d\n", dataBits);
+	SOAR_PRINT("The sign data bits are: %d\n", signBit);
 
+	if(signBit == 0){
+		TC2_temperature = dataBits>>2;
+		TC2_temp_int =  0x07ff & (dataBits>>2);
+		TC2_temp_decimal = dataBits & 0x0003;
 
-	if(!signBit){
-			TC2_temperature = (double)dataBits/4.0;
-		} else {
-			dataBits = (~dataBits) + 1;
-			TC2_temperature = -1 * (double)dataBits/4.0;
-		}
+	} else {
+		dataBits = (~dataBits) + 1;
+		TC2_temperature = -1 * (double)dataBits/4.0;
+		TC2_temp_int =  -(0x07ff & (dataBits>>2));
+		TC2_temp_decimal = dataBits & 0x0003;
+	}
 
-	SOAR_PRINT("\t-- The temp read by TC2 is %f --\n", TC2_temperature);
+	SOAR_PRINT("\t-- The temp read by TC2 is %d.%d \n", TC2_temp_int, TC2_temp_decimal);
 }
 
 
