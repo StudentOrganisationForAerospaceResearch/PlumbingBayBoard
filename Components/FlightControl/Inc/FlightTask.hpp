@@ -17,6 +17,8 @@ public:
     }
 
     void InitTask();
+    void OpenServo();
+    void CloseServo();
 
 protected:
     static void RunTask(void* pvParams) { FlightTask::Inst().Run(pvParams); } // Static Task Interface, passes control to the instance Run();

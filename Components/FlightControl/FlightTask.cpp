@@ -15,6 +15,16 @@ FlightTask::FlightTask() : Task(FLIGHT_TASK_QUEUE_DEPTH_OBJS)
 {
 }
 
+void FlightTask::OpenServo() {
+	SOAR_PRINT("Servo Open called");
+	htim8.Instance->CCR4 = 50;
+}
+
+void FlightTask::CloseServo() {
+	SOAR_PRINT("Servo Close called");
+	htim8.Instance->CCR4 = 103;
+}
+
 /**
  * @brief Initialize the FlightTask
  */
@@ -42,6 +52,9 @@ void FlightTask::Run(void * pvParams)
 {
     uint32_t tempSecondCounter = 0; // TODO: Temporary counter, would normally be in HeartBeat task or HID Task, unless FlightTask is the HeartBeat task
     GPIO::LED1::Off();
+
+    HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
+	htim8.Instance->CCR4 = 103;
 
     while (1) {
         // There's effectively 3 types of tasks... 'Async' and 'Synchronous-Blocking' and 'Synchronous-Non-Blocking'

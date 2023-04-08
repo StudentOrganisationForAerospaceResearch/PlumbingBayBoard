@@ -118,6 +118,18 @@ void DebugTask::HandleDebugMessage(const char* msg)
 		GPIO::LED1::On();
 		// TODO: Send to HID task to blink LED, this shouldn't delay
 	}
+	else if (strcmp(msg, "open") == 0) {
+		// Print message
+		SOAR_PRINT("Sevo Opened\n");
+		FlightTask::Inst().OpenServo();
+		// TODO: Send to HID task to blink LED, this shouldn't delay
+	}
+	else if (strcmp(msg, "close") == 0) {
+		// Print message
+		SOAR_PRINT("Sevo Closed\n");
+		FlightTask::Inst().CloseServo();
+		// TODO: Send to HID task to blink LED, this shouldn't delay
+	}
 	else {
 		// Single character command, or unknown command
 		switch (msg[0]) {
