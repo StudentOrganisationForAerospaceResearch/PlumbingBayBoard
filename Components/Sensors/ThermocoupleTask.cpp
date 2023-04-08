@@ -172,26 +172,32 @@ void ThermocoupleTask::SampleThermocouple()
 
 	*///------------------------------------------------------------------------------
 
-
 	//Storable Data ------------------------------------------------------------------------------
 
-	uint8_t dataBuffer1[4];
+	uint8_t dataBuffer1[4] = {0};
+	uint8_t dataBuffer5[5] = {0};
 	//See Above bit mem-map
+
 
 	uint8_t Error1=0;// Thermocouple Connection acknowledge Flag
 	uint32_t sign1=0;
 	int Temp1=0;
 
 	//Read ---------------------------------------------------------------------------------------
+	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_SET);
+
 
     //Read From Thermocouple 1 first
 	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
-	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple1, dataBuffer1, 4, 1000); //Fill the data buffer with data from TC1
+	HAL_Delay(10);
+	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple1, dataBuffer5, 5, 1000); //Fill the data buffer with data from TC1
+	HAL_Delay(10);
 	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
 
 	SOAR_PRINT("------------1-------------\n");
 
 	for(int i = 0; i<4; i++){
+		dataBuffer1[i] = dataBuffer5[i+1];
 		SOAR_PRINT("databufferTC1[%d] are: %d\n",i, dataBuffer1[i]);
 	}
 	SOAR_PRINT("\n");
@@ -203,6 +209,7 @@ void ThermocoupleTask::SampleThermocouple()
 	sign1=(dataBuffer1[0]&(0x80))>>7;							  // Sign Bit calculation
 
 	if(dataBuffer1[3] & 0x07){								  // Returns Error Number
+		SOAR_PRINT("THERE IS AN ERROR !!!!!!!");
 		temp_debug_1 = (-1*(dataBuffer1[3] & 0x07));
 	}
 	else if(sign1==1){									  // Negative Temperature
@@ -217,7 +224,7 @@ void ThermocoupleTask::SampleThermocouple()
 		temp_debug_1 = ((double)Temp1 / 4);
 	}
 
-	temp_debug_1 = temp_debug_1*100;
+	temp_debug_1 = temp_debug_1*100-320; //room temp should've been 22.5, it was reading ambient 25.7
 	SOAR_PRINT(
 				"\t-- The new Temp as big number say its read by TC1 is %d \n"
 				, (int)temp_debug_1);
@@ -227,7 +234,9 @@ void ThermocoupleTask::SampleThermocouple()
 
 
 
-	uint8_t dataBuffer2[4];
+
+	uint8_t dataBuffer2[4] = {0};
+	dataBuffer5[5] = {0};
 	//See Above bit mem-map
 
 	uint8_t Error2=0;// Thermocouple Connection acknowledge Flag
@@ -235,16 +244,19 @@ void ThermocoupleTask::SampleThermocouple()
 	int Temp2=0;
 
 	//Read ---------------------------------------------------------------------------------------
+	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET);
 
 	//Read From Thermocouple 1 first
 	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
-	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple2, dataBuffer2, 4, 1000); //Fill the data buffer with data from TC1
+	HAL_Delay(10);
+	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple2, dataBuffer5, 5, 1000); //Fill the data buffer with data from TC1
+	HAL_Delay(10);
 	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
-
 
 	SOAR_PRINT("------------2-------------\n");
 
 	for(int i = 0; i<4; i++){
+		dataBuffer2[i] = dataBuffer5[i+1];
 		SOAR_PRINT("databufferTC2[%d] are: %d\n",i, dataBuffer2[i]);
 	}
 	SOAR_PRINT("\n");
@@ -256,6 +268,7 @@ void ThermocoupleTask::SampleThermocouple()
 	sign2=(dataBuffer2[0]&(0x80))>>7;							  // Sign Bit calculation
 
 	if(dataBuffer2[3] & 0x07){								  // Returns Error Number
+		SOAR_PRINT("THERE IS AN ERROR !!!!!!!");
 		temp_debug_2 = (-1*(dataBuffer2[3] & 0x07));
 	}
 	else if(sign2==1){									  // Negative Temperature
@@ -270,11 +283,12 @@ void ThermocoupleTask::SampleThermocouple()
 		temp_debug_2 = ((double)Temp2 / 4);
 	}
 
-	temp_debug_2 = temp_debug_2*100;
+	temp_debug_2 = temp_debug_2*100-320; //room temp should've been 22.5, it was reading ambient 25.7
 	SOAR_PRINT(
-				"\tThe new Temp as big number say its read by TC2 is %d \n", (int)temp_debug_2);
+				"\t-- The new Temp as big number say its read by TC2 is %d \n"
+				, (int)temp_debug_2);
 
-	SOAR_PRINT("\tThe new Temp say its read by TC2 is %d.%d C \n"
+	SOAR_PRINT("\t-- The new Temp say its read by TC2 is %d.%d C \n"
 			"-------------------------\n", (int)temp_debug_2/100, (uint8_t)(int)temp_debug_2%100);
 
 }
