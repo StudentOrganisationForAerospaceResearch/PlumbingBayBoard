@@ -68,7 +68,7 @@ void ServoTask::InitTask()
  */
 void ServoTask::Run(void * pvParams)
 {
-    while (1) {
+	    while (1) {
         Command cm;
 
         //Wait forever for a command
@@ -133,14 +133,7 @@ void ServoTask::Open()
 	//    uint32_t tempSecondCounter = 0; // TODO: Temporary counter, would normally be in HeartBeat task or HID Task, unless FlightTask is the HeartBeat task
 	GPIO::LED1::Off();
 	//    motorPWMTask();
-	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
 	htim8.Instance->CCR4 = 103;
-	while (1) {
-	  htim8.Instance->CCR4 = 50; //55
-	  osDelay(10000);
-	  htim8.Instance->CCR4 = 103;
-	  osDelay(10000);
-	}
 }
 
 
@@ -149,12 +142,5 @@ void ServoTask::Close()
 	//    uint32_t tempSecondCounter = 0; // TODO: Temporary counter, would normally be in HeartBeat task or HID Task, unless FlightTask is the HeartBeat task
 	GPIO::LED1::Off();
 	//    motorPWMTask();
-	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
-	htim8.Instance->CCR4 = 103;
-	while (1) {
-	  htim8.Instance->CCR4 = 50; //55
-	  osDelay(10000);
-	  htim8.Instance->CCR4 = 103;
-	  osDelay(10000);
-	}
+	htim8.Instance->CCR4 = 50;
 }
