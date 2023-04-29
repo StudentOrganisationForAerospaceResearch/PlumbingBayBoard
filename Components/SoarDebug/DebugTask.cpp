@@ -35,6 +35,7 @@ constexpr uint8_t DEBUG_TASK_PERIOD = 100;
  */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
 {
+	SOAR_PRINT("Debug (remove after): in halcallback");
 	if (huart->Instance == SystemHandles::UART_Debug->Instance)
 		DebugTask::Inst().InterruptRxData();
 }
@@ -77,14 +78,18 @@ void DebugTask::InitTask()
  */
 void DebugTask::Run(void * pvParams)
 {
+	SOAR_PRINT("Debug (remove after): in run debugtask\r\n");
 	// Arm the interrupt
 	ReceiveData();
+	SOAR_PRINT("Debug (remove after): entering while 1 run\r\n");
 
 	while (1) {
 		Command cm;
 
+		SOAR_PRINT("Debug (remove after): entering wait for command\r\n");
 		//Wait forever for a command
 		qEvtQueue->ReceiveWait(cm);
+		SOAR_PRINT("Debug (remove after):we got a command\r\n");
 
 		//Process the command
 		if(cm.GetCommand() == DATA_COMMAND && cm.GetTaskCommand() == EVENT_DEBUG_RX_COMPLETE) {
@@ -101,6 +106,7 @@ void DebugTask::Run(void * pvParams)
  */
 void DebugTask::HandleDebugMessage(const char* msg)
 {
+	SOAR_PRINT("Debug (remove after): in handle message\r\n");
 	//-- SYSTEM / CHAR COMMANDS -- (Must be last)
 	if (strcmp(msg, "sysreset") == 0) {
 		// Reset the system
@@ -144,7 +150,9 @@ void DebugTask::HandleDebugMessage(const char* msg)
  */
 bool DebugTask::ReceiveData()
 {
+	SOAR_PRINT("Debug (remove after): in receiveData\r\n");
 	HAL_UART_Receive_IT(SystemHandles::UART_Debug, &debugRxChar, 1);
+	SOAR_PRINT("Debug (remove after): leaving receiveData\r\n");
 	return true;
 }
 
@@ -154,6 +162,7 @@ bool DebugTask::ReceiveData()
  */
 void DebugTask::InterruptRxData()
 {
+	SOAR_PRINT("Debug (remove after): in interruptRxData\r\n");
 	// If we already have an unprocessed debug message, ignore this byte
 	if (!isDebugMsgReady) {
 		// Check byte for end of message - note if using termite you must turn on append CR

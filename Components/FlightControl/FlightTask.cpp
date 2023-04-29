@@ -70,8 +70,8 @@ void FlightTask::Run(void * pvParams)
     	osDelay(1000);
         //Every cycle, print something out (for testing)
         //SOAR_PRINT("FlightTask::Run() - [%d] Seconds\n", tempSecondCounter++);
-        SOAR_PRINT("\nDebug 'Thermocouple' Sampling Temperature Reading\n");
-        ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_NEW_SAMPLE ));
+//        SOAR_PRINT("\nDebug 'Thermocouple' Sampling Temperature Reading\n");
+//        ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_NEW_SAMPLE ));
         //ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_DEBUG ));
 
         //osDelay(FLIGHT_PHASE_DISPLAY_FREQ);
