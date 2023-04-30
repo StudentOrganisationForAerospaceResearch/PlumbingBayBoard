@@ -29,7 +29,7 @@
  */
 ServoTask::ServoTask() : Task(TASK_SERVO_QUEUE_DEPTH_OBJS)
 {
-	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
+//	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
 }
 
 /**
@@ -82,6 +82,7 @@ void ServoTask::HandleCommand(Command& cm)
     //Switch for the GLOBAL_COMMAND
     switch (cm.GetCommand()) {
     case REQUEST_COMMAND: {
+    	SOAR_PRINT("Checkiong command");
         HandleRequestCommand(cm.GetTaskCommand());
     }
     case TASK_SPECIFIC_COMMAND: {
@@ -122,7 +123,7 @@ void ServoTask::HandleRequestCommand(uint16_t taskCommand)
 void ServoTask::Open()
 {
 	SOAR_PRINT("opened");
-
+	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
 	htim8.Instance->CCR4 = 103;
 
 }
@@ -132,5 +133,6 @@ void ServoTask::Close()
 {
 	SOAR_PRINT("closed");
 //	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
+	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
 	htim8.Instance->CCR4 = 50;
 }

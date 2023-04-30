@@ -122,13 +122,13 @@ void DebugTask::HandleDebugMessage(const char* msg)
 	else if (strcmp(msg, "open") == 0) {
 		// Print message
 		SOAR_PRINT("Debug 'ServoOpen' Sample and Output Received\n");
-		ServoTask::Inst().SendCommand(Command(REQUEST_COMMAND, SERVO_OPEN));
+		ServoTask::Inst().Open();
 		// TODO: Send to HID task to blink LED, this shouldn't delay
 	}
 	else if (strcmp(msg, "close") == 0) {
 		// Print message
 		SOAR_PRINT("Debug 'ServoClose' Sample and Output Received\n");
-		ServoTask::Inst().SendCommand(Command(REQUEST_COMMAND, SERVO_CLOSE));
+		ServoTask::Inst().Close();
 		// TODO: Send to HID task to blink LED, this shouldn't delay
 	}
 	else {

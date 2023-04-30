@@ -28,6 +28,8 @@ public:
     }
 
     void InitTask();
+    void Open();
+	void Close();
 
 protected:
     static void RunTask(void* pvParams) { ServoTask::Inst().Run(pvParams); } // Static Task Interface, passes control to the instance Run();
@@ -38,8 +40,7 @@ protected:
     void HandleRequestCommand(uint16_t taskCommand);
 
     // Sampling
-    void Open();
-    void Close();
+
 
 
 private:
