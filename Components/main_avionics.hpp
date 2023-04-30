@@ -35,6 +35,9 @@ extern UART_HandleTypeDef huart2;   // UART2 - Logging (Radio)
 extern UART_HandleTypeDef huart4;   // UART4 - GPS
 extern UART_HandleTypeDef huart5;   // UART5 - Debug
 
+//Timer Channel Handles
+extern TIM_HandleTypeDef htim8;
+
 //ADC Handles
 extern ADC_HandleTypeDef hadc1;      // ADC1 - Combustion Chamber ADC
 extern ADC_HandleTypeDef hadc2;      // ADC2 - Battery

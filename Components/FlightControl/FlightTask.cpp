@@ -7,14 +7,29 @@
 #include "FlightTask.hpp"
 #include "GPIO.hpp"
 #include "SystemDefines.hpp"
-
+//void motorPWMTask()
+//{
+//  /* USER CODE BEGIN motorPWMTask */
+//
+//  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
+//  htim8.Instance->CCR4 = 25;
+//
+//  for (;;)
+//  {
+//	  htim8.Instance->CCR4 = 70; //55
+//	  osDelay(5000);
+//	  htim8.Instance->CCR4 = 25;
+//	  osDelay(5000);
+//
+//  }
+//  /* USER CODE END motorPWMTask */
+//}
 /**
  * @brief Constructor for FlightTask
  */
 FlightTask::FlightTask() : Task(FLIGHT_TASK_QUEUE_DEPTH_OBJS)
 {
 }
-
 /**
  * @brief Initialize the FlightTask
  */
@@ -30,10 +45,8 @@ void FlightTask::InitTask()
             (void*)this,
             (UBaseType_t)FLIGHT_TASK_RTOS_PRIORITY,
             (TaskHandle_t*)&rtTaskHandle);
-
     SOAR_ASSERT(rtValue == pdPASS, "FlightTask::InitTask() - xTaskCreate() failed");
 }
-
 /**
  * @brief Instance Run loop for the Flight Task, runs on scheduler start as long as the task is initialized.
  * @param pvParams RTOS Passed void parameters, contains a pointer to the object instance, should not be used
@@ -68,37 +81,5 @@ void FlightTask::Run(void * pvParams)
 
         //Every cycle, print something out (for testing)
         SOAR_PRINT("FlightTask::Run() - [%d] Seconds\n", tempSecondCounter++);
-
-        //osDelay(FLIGHT_PHASE_DISPLAY_FREQ);
-
-        //// Half the buzzer frequency for flight phase beeps
-        //// (slightly less important, and only a bit quieter)
-        //htim2.Init.Prescaler = ((htim2.Init.Prescaler + 1) * 2) - 1;
-        //if (HAL_TIM_Base_Init(&htim2) != HAL_OK) {
-        //    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-        //    osDelay(BUZZER_ERR_PERIOD);
-        //    HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
-        //}
-
-        //// Beep n times for flight phase n, and blink LED 1
-        //for (int i = -1; i < getCurrentFlightPhase(); i++) {
-        //    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-        //    HAL_GPIO_WritePin(LED_1_GPIO_Port, LED_1_Pin, 1);
-        //    osDelay(FLIGHT_PHASE_BLINK_FREQ);
-
-        //    HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
-        //    HAL_GPIO_WritePin(LED_1_GPIO_Port, LED_1_Pin, 0);
-        //    osDelay(FLIGHT_PHASE_BLINK_FREQ);
-        //}
-
-        //// Return the buzzer to its optimal frequency for message beeps
-        //htim2.Init.Prescaler = ((htim2.Init.Prescaler + 1) / 2) - 1;
-        //if (HAL_TIM_Base_Init(&htim2) != HAL_OK) {
-        //    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-        //    osDelay(BUZZER_ERR_PERIOD);
-        //    HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
-        //}
-
-        // TODO: Message beeps
     }
 }
