@@ -29,6 +29,7 @@
  */
 ServoTask::ServoTask() : Task(TASK_SERVO_QUEUE_DEPTH_OBJS)
 {
+	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
 }
 
 /**
@@ -120,25 +121,16 @@ void ServoTask::HandleRequestCommand(uint16_t taskCommand)
 
 void ServoTask::Open()
 {
-	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
+	SOAR_PRINT("opened");
+
 	htim8.Instance->CCR4 = 103;
-	while (1) {
-	  htim8.Instance->CCR4 = 50; //55
-	  osDelay(10000);
-	  htim8.Instance->CCR4 = 103;
-	  osDelay(10000);
-	}
+
 }
 
 
 void ServoTask::Close()
 {
-	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
-	htim8.Instance->CCR4 = 103;
-	while (1) {
-	  htim8.Instance->CCR4 = 50; //55
-	  osDelay(10000);
-	  htim8.Instance->CCR4 = 103;
-	  osDelay(10000);
-	}
+	SOAR_PRINT("closed");
+//	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
+	htim8.Instance->CCR4 = 50;
 }

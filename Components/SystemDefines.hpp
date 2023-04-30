@@ -60,6 +60,10 @@ constexpr uint8_t TASK_IMU_PRIORITY = 2;			// Priority of the barometer task
 constexpr uint8_t TASK_IMU_QUEUE_DEPTH_OBJS = 10;		// Size of the barometer task queue
 constexpr uint16_t TASK_IMU_STACK_DEPTH_WORDS = 256;		// Size of the barometer task stack
 
+// SERVO TASK
+constexpr uint8_t TASK_SERVO_PRIORITY = 2;			// Priority of the servo task
+constexpr uint8_t TASK_SERVO_QUEUE_DEPTH_OBJS = 10;		// Size of the servo task queue
+constexpr uint16_t TASK_SERVO_STACK_DEPTH_WORDS = 256;		// Size of the servo task stack
 
 
 /* System Defines ------------------------------------------------------------------*/
