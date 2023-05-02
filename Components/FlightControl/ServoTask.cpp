@@ -124,7 +124,7 @@ void ServoTask::Open()
 {
 	SOAR_PRINT("opened");
 	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
-	htim8.Instance->CCR4 = 103;
+	htim8.Instance->CCR4 = 50;
 
 }
 
@@ -134,5 +134,5 @@ void ServoTask::Close()
 	SOAR_PRINT("closed");
 //	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
 	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
-	htim8.Instance->CCR4 = 50;
+	htim8.Instance->CCR4 = 109;
 }
