@@ -58,6 +58,18 @@ void PBBProtocolTask::HandleProtobufCommandMessage(EmbeddedProto::ReadBufferFixe
     // Process the db command
     switch (msg.get_pbb_command().get_command_enum())
     {
+    case Proto::PBBCommand::Command::PBB_OPEN_MEV:
+		FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)PBB_OPEN_MEV));
+		break;
+	case Proto::PBBCommand::Command::PBB_CLOSE_MEV:
+		FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)PBB_CLOSE_MEV));
+		break;
+	case Proto::PBBCommand::Command::PBB_OPEN_DRAIN:
+		FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)PBB_OPEN_DRAIN));
+		break;
+	case Proto::PBBCommand::Command::PBB_CLOSE_DRAIN:
+		FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)PBB_CLOSE_DRAIN));
+		break;
     default:
         break;
     }
