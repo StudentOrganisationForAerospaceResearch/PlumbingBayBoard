@@ -23,7 +23,7 @@ void soar_assert_debug(bool condition, const char* file, uint16_t line, const ch
 /* All must be extern from main_avionics.cpp -------------------------------------------------*/
 namespace Global
 {
-	extern Mutex vaListMutex;
+    extern Mutex vaListMutex;
 }
 
 
@@ -31,7 +31,7 @@ namespace Global
 /* This should be the only place externs are allowed -------------------------------*/
 //UART Handles
 extern UART_HandleTypeDef huart1;   // UART1 - Launch Systems  ... Confirm
-extern UART_HandleTypeDef huart2;   // UART2 - Logging (Radio)
+extern UART_HandleTypeDef huart3;   // UART2 - Logging (Radio)
 extern UART_HandleTypeDef huart4;   // UART4 - GPS
 extern UART_HandleTypeDef huart5;   // UART5 - Debug
 
@@ -54,22 +54,26 @@ extern DMA_HandleTypeDef hdma_uart4_rx; // DMA UART 4 RX -
 extern DMA_HandleTypeDef hdma_uart5_rx; // DMA UART 5 RX -
 extern DMA_HandleTypeDef hdma_uart5_tx; // DMA UART 5 TX -
 
+//Timer Handles
+extern TIM_HandleTypeDef htim8; // TIM 8
+
+
 namespace SystemHandles {
-	// Aliases
-	constexpr UART_HandleTypeDef* UART_LaunchSystems = &huart1;
-	constexpr UART_HandleTypeDef* UART_Protocol = &huart2; // Protocol Rx Radio Line
-	constexpr UART_HandleTypeDef* UART_GPS = &huart4;
-	constexpr UART_HandleTypeDef* UART_Debug = &huart5;
+    // Aliases
+    constexpr UART_HandleTypeDef* UART_LaunchSystems = &huart1;
+    constexpr UART_HandleTypeDef* UART_Protocol = &huart3; // Protocol Rx Radio Line
+    constexpr UART_HandleTypeDef* UART_GPS = &huart4;
+    constexpr UART_HandleTypeDef* UART_Debug = &huart5;
 
-	constexpr ADC_HandleTypeDef* ADC_CombustionChamber = &hadc1;
-	constexpr ADC_HandleTypeDef* ADC_Battery = &hadc2;
+    constexpr ADC_HandleTypeDef* ADC_CombustionChamber = &hadc1;
+    constexpr ADC_HandleTypeDef* ADC_Battery = &hadc2;
 
-	constexpr SPI_HandleTypeDef* SPI_IMU = &hspi1;
-	constexpr SPI_HandleTypeDef* SPI_Barometer = &hspi3;
+    constexpr SPI_HandleTypeDef* SPI_IMU = &hspi1;
+    constexpr SPI_HandleTypeDef* SPI_Barometer = &hspi3;
 
-	constexpr CRC_HandleTypeDef* CRC_Handle = &hcrc;
+    constexpr CRC_HandleTypeDef* CRC_Handle = &hcrc;
 
-	// DMA Aliases
+    // DMA Aliases
 
 }
 

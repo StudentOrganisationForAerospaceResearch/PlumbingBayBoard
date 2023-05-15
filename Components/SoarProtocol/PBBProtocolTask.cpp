@@ -8,6 +8,8 @@
 
 #include "FlightTask.hpp"
 #include "ReadBufferFixedSize.h"
+#include "MEV.hpp"
+#include "GPIO.hpp"
 
 /**
  * @brief Initialize the PBBProtocolTask
@@ -59,21 +61,14 @@ void PBBProtocolTask::HandleProtobufCommandMessage(EmbeddedProto::ReadBufferFixe
     switch (msg.get_pbb_command().get_command_enum())
     {
     case Proto::PBBCommand::Command::PBB_OPEN_MEV:
-		FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)PBB_OPEN_MEV));
-		break;
-	case Proto::PBBCommand::Command::PBB_CLOSE_MEV:
-		FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)PBB_CLOSE_MEV));
-		break;
-	case Proto::PBBCommand::Command::PBB_OPEN_DRAIN:
-		FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)PBB_OPEN_DRAIN));
-		break;
-	case Proto::PBBCommand::Command::PBB_CLOSE_DRAIN:
-		FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)PBB_CLOSE_DRAIN));
-		break;
+        MEV::OpenMEV();
+        break;
+    case Proto::PBBCommand::Command::PBB_CLOSE_MEV:
+        MEV::CloseMEV();
+        break;
     default:
         break;
     }
-
 }
 
 /**
