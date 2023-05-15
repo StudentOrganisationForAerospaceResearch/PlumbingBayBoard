@@ -32,7 +32,6 @@ namespace Global
 //UART Handles
 extern UART_HandleTypeDef huart1;   // UART1 - Launch Systems  ... Confirm
 extern UART_HandleTypeDef huart3;   // UART2 - Logging (Radio)
-extern UART_HandleTypeDef huart4;   // UART4 - GPS
 extern UART_HandleTypeDef huart5;   // UART5 - Debug
 
 //ADC Handles
@@ -62,7 +61,6 @@ namespace SystemHandles {
     // Aliases
     constexpr UART_HandleTypeDef* UART_LaunchSystems = &huart1;
     constexpr UART_HandleTypeDef* UART_Protocol = &huart3; // Protocol Rx Radio Line
-    constexpr UART_HandleTypeDef* UART_GPS = &huart4;
     constexpr UART_HandleTypeDef* UART_Debug = &huart5;
 
     constexpr ADC_HandleTypeDef* ADC_CombustionChamber = &hadc1;
