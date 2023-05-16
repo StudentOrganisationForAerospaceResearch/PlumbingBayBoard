@@ -51,9 +51,6 @@ TIM_HandleTypeDef htim8;
 
 UART_HandleTypeDef huart5;
 UART_HandleTypeDef huart1;
-UART_HandleTypeDef huart3;
-DMA_HandleTypeDef hdma_usart3_rx;
-DMA_HandleTypeDef hdma_usart3_tx;
 
 osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
@@ -62,7 +59,6 @@ osThreadId defaultTaskHandle;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_TIM8_Init(void);
 static void MX_SPI3_Init(void);
@@ -70,7 +66,6 @@ static void MX_CRC_Init(void);
 static void MX_UART5_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_SPI2_Init(void);
-static void MX_USART3_UART_Init(void);
 void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
@@ -110,7 +105,6 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_ADC1_Init();
   MX_TIM8_Init();
   MX_SPI3_Init();
@@ -118,7 +112,6 @@ int main(void)
   MX_UART5_Init();
   MX_USART1_UART_Init();
   MX_SPI2_Init();
-  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
   run_main();
@@ -506,58 +499,6 @@ static void MX_USART1_UART_Init(void)
   /* USER CODE BEGIN USART1_Init 2 */
 
   /* USER CODE END USART1_Init 2 */
-
-}
-
-/**
-  * @brief USART3 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USART3_UART_Init(void)
-{
-
-  /* USER CODE BEGIN USART3_Init 0 */
-
-  /* USER CODE END USART3_Init 0 */
-
-  /* USER CODE BEGIN USART3_Init 1 */
-
-  /* USER CODE END USART3_Init 1 */
-  huart3.Instance = USART3;
-  huart3.Init.BaudRate = 115200;
-  huart3.Init.WordLength = UART_WORDLENGTH_8B;
-  huart3.Init.StopBits = UART_STOPBITS_1;
-  huart3.Init.Parity = UART_PARITY_NONE;
-  huart3.Init.Mode = UART_MODE_TX_RX;
-  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart3) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USART3_Init 2 */
-
-  /* USER CODE END USART3_Init 2 */
-
-}
-
-/**
-  * Enable DMA controller clock
-  */
-static void MX_DMA_Init(void)
-{
-
-  /* DMA controller clock enable */
-  __HAL_RCC_DMA1_CLK_ENABLE();
-
-  /* DMA interrupt init */
-  /* DMA1_Stream1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
-  /* DMA1_Stream3_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
 
 }
 

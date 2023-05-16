@@ -55,9 +55,6 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern DMA_HandleTypeDef hdma_usart3_rx;
-extern DMA_HandleTypeDef hdma_usart3_tx;
-extern UART_HandleTypeDef huart3;
 extern TIM_HandleTypeDef htim1;
 
 /* USER CODE BEGIN EV */
@@ -164,34 +161,6 @@ void DebugMon_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles DMA1 stream1 global interrupt.
-  */
-void DMA1_Stream1_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Stream1_IRQn 0 */
-
-  /* USER CODE END DMA1_Stream1_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_usart3_rx);
-  /* USER CODE BEGIN DMA1_Stream1_IRQn 1 */
-
-  /* USER CODE END DMA1_Stream1_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA1 stream3 global interrupt.
-  */
-void DMA1_Stream3_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Stream3_IRQn 0 */
-
-  /* USER CODE END DMA1_Stream3_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_usart3_tx);
-  /* USER CODE BEGIN DMA1_Stream3_IRQn 1 */
-
-  /* USER CODE END DMA1_Stream3_IRQn 1 */
-}
-
-/**
   * @brief This function handles TIM1 update interrupt and TIM10 global interrupt.
   */
 void TIM1_UP_TIM10_IRQHandler(void)
@@ -203,20 +172,6 @@ void TIM1_UP_TIM10_IRQHandler(void)
   /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 1 */
 
   /* USER CODE END TIM1_UP_TIM10_IRQn 1 */
-}
-
-/**
-  * @brief This function handles USART3 global interrupt.
-  */
-void USART3_IRQHandler(void)
-{
-  /* USER CODE BEGIN USART3_IRQn 0 */
-
-  /* USER CODE END USART3_IRQn 0 */
-  HAL_UART_IRQHandler(&huart3);
-  /* USER CODE BEGIN USART3_IRQn 1 */
-
-  /* USER CODE END USART3_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
