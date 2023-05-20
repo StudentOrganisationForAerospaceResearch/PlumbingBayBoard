@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SOAR_PBB_DATA_H_
+#define SOAR_PBB_DATA_H_
 
 /* Structs containing data primitives */
 
@@ -11,10 +12,8 @@
  * please see the design manual for more information.
  */
 
-
 typedef struct
 {
-    //osMutexId   mutex_;
     int32_t     pressure_1;
     int32_t		pressure_2;
 } PressureTransducerData;
