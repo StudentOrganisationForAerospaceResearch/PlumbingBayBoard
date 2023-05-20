@@ -293,66 +293,6 @@ void ThermocoupleTask::SampleThermocouple()
 
 }
 
-void ThermocoupleTask::ConvertTempuatureData()
-{
-	double TC1_temperature;
-
-	int16_t TC1_temp_int;
-	uint16_t TC1_temp_decimal;
-
-	double TC2_temperature;
-
-	int16_t TC2_temp_int;
-	uint16_t TC2_temp_decimal;
-
-	uint16_t dataBits = TC1_Temp_Data & 0x1fff; //filters out only the data bits
-	int signBit = (TC1_Temp_Data & 0x2000); //true if sign bit is on
-	SOAR_PRINT("The OG data bits are: %d\n", dataBits);
-	SOAR_PRINT("The sign data bits are: %d\n", signBit);
-	//Calculate the actual temperature value using two's complement if needed
-
-	if(signBit == 0){
-		TC1_temperature = dataBits>>2;
-		TC1_temp_int =  0x07ff & (dataBits>>2);
-		TC1_temp_decimal = dataBits & 0x0003;
-
-	} else {
-		dataBits = (~dataBits) + 1;
-		TC1_temperature = -1 * (double)dataBits/4.0;
-		TC1_temp_int =  -(0x07ff & (dataBits>>2));
-		TC1_temp_decimal = dataBits & 0x0003;
-	}
-
-
-	//TC1_temperature= TC1_temperature*100;
-	//SOAR_PRINT("The temp data is bits are: %d-------------- :)\n", TC1_temperature);
-	SOAR_PRINT("\t-- The temp read by TC1 is %d.%d \n", TC1_temp_int, TC1_temp_decimal);
-
-
-
-	dataBits = TC2_Temp_Data & 0x1fff;
-	signBit = (TC2_Temp_Data & 0x2000);
-	SOAR_PRINT("The OG data bits are: %d\n", dataBits);
-	SOAR_PRINT("The sign data bits are: %d\n", signBit);
-
-	if(signBit == 0){
-		TC2_temperature = dataBits>>2;
-		TC2_temp_int =  0x07ff & (dataBits>>2);
-		TC2_temp_decimal = dataBits & 0x0003;
-
-	} else {
-		dataBits = (~dataBits) + 1;
-		TC2_temperature = -1 * (double)dataBits/4.0;
-		TC2_temp_int =  -(0x07ff & (dataBits>>2));
-		TC2_temp_decimal = dataBits & 0x0003;
-	}
-
-	SOAR_PRINT("\t-- The temp read by TC2 is %d.%d \n", TC2_temp_int, TC2_temp_decimal);
-}
-
-
-
-
 
 
 
