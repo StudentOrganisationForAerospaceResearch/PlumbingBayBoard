@@ -19,6 +19,8 @@
 #include "UARTTask.hpp"
 #include "FlightTask.hpp"
 #include "DebugTask.hpp"
+#include "PressureTransducerTask.hpp"
+#include "TelemetryTask.hpp"
 
 
 /* Global Variables ------------------------------------------------------------------*/

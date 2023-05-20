@@ -1,4 +1,4 @@
-/**
+	/**
  ******************************************************************************
  * File Name          : PressureTransducerTask.hpp
  * Description        :
@@ -17,7 +17,7 @@ enum PT_TASK_COMMANDS {
     PT_NONE = 0,
     PT_REQUEST_NEW_SAMPLE,// Get a new pressure transducer sample, task will be blocked for polling time
     PT_REQUEST_TRANSMIT,    // Send the current pressure transducer data over the Radio
-    PT_REQUEST_DEBUG        // Send the current pressure transducer data over the Debug UART
+    PT_REQUEST_DEBUG,        // Send the current pressure transducer data over the Debug UART
 };
 
 /* Class ------------------------------------------------------------------*/
@@ -41,6 +41,7 @@ protected:
 
     // Sampling
     void SamplePressureTransducer();
+    void TransmitProtocolPressureData();
 
     // Data
     PressureTransducerData* data;
