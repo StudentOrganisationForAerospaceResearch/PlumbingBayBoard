@@ -14,8 +14,9 @@
 
 typedef struct
 {
-    osMutexId   mutex_;
-    int32_t     pressure_;
+    //osMutexId   mutex_;
+    int32_t     pressure_1;
+    int32_t		pressure_2;
 } PressureTransducerData;
 
 typedef struct
