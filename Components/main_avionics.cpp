@@ -13,12 +13,12 @@
 #include "stm32f4xx_hal_uart.h"
 #include "Mutex.hpp"
 #include "Command.hpp"
+#include "PBBProtocolTask.hpp"
 
 // Tasks
 #include "UARTTask.hpp"
 #include "FlightTask.hpp"
 #include "DebugTask.hpp"
-#include "PressureTransducerTask.hpp"
 
 
 /* Global Variables ------------------------------------------------------------------*/
@@ -34,7 +34,8 @@ void run_main() {
 	UARTTask::Inst().InitTask();
 	DebugTask::Inst().InitTask();
 	PressureTransducerTask::Inst().InitTask();
-
+	PBBProtocolTask::Inst().InitTask();
+	TelemetryTask::Inst().InitTask();
 
 	// Print System Boot Info : Warning, don't queue more than 10 prints before scheduler starts
 	SOAR_PRINT("\n-- AVIONICS CORE --\n");
