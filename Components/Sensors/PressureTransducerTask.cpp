@@ -187,10 +187,10 @@ void PressureTransducerTask::SamplePressureTransducer()
 			HAL_ADC_Stop(&hadc1);
 			}
 	vi = ((3.3/4095) * (adcVal[0])); // Converts 12 bit ADC value into voltage
-	pressureTransducerValue1 = (250 * ((vi * PRESSURE_SCALE) + 0.08) - 125) * 1000; // Multiply by 1000 to keep decimal places
+	pressureTransducerValue1 = (250 * (vi * PRESSURE_SCALE) - 125) * 1000; // Multiply by 1000 to keep decimal places
 	data->pressure_1 = (int32_t) pressureTransducerValue1; // Pressure in PSI
 	vi = ((3.3/4095) * (adcVal[1])); // Converts 12 bit ADC value into voltage
-		pressureTransducerValue2 = (250 * ((vi * PRESSURE_SCALE) + 0.08) - 125) * 1000; // Multiply by 1000 to keep decimal places
+		pressureTransducerValue2 = (250 * (vi * PRESSURE_SCALE) - 125) * 1000; // Multiply by 1000 to keep decimal places
 		data->pressure_2 = (int32_t) pressureTransducerValue2; // Pressure in PSI
 	timestampPT = HAL_GetTick();
 }
