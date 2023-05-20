@@ -7,6 +7,7 @@
 #include "FlightTask.hpp"
 #include "GPIO.hpp"
 #include "SystemDefines.hpp"
+#include "PBBProtocolTask.hpp"
 
 /**
  * @brief Constructor for FlightTask
@@ -65,6 +66,21 @@ void FlightTask::Run(void * pvParams)
         osDelay(500);
         GPIO::LED1::Off();
         osDelay(500);
+
+        // For testing, generate a PROTOBUF message and send it to the Protocol Task
+		Proto::ControlMessage msg;
+		msg.set_source(Proto::Node::NODE_PBB);
+		msg.set_target(Proto::Node::NODE_DMB);
+		msg.set_message_id(Proto::MessageID::MSG_CONTROL);
+		Proto::SystemState stateMsg;
+		stateMsg.set_sys_state(Proto::SystemState::State::SYS_NORMAL_OPERATION);
+		msg.set_sys_state(stateMsg);
+
+		EmbeddedProto::WriteBufferFixedSize<DEFAULT_PROTOCOL_WRITE_BUFFER_SIZE> writeBuffer;
+		msg.serialize(writeBuffer);
+
+		// Send the control message
+		PBBProtocolTask::SendProtobufMessage(writeBuffer,Proto::MessageID::MSG_CONTROL);
 
         //Every cycle, print something out (for testing)
         SOAR_PRINT("FlightTask::Run() - [%d] Seconds\n", tempSecondCounter++);

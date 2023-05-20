@@ -36,7 +36,7 @@
 // FLIGHT PHASE
 constexpr uint8_t FLIGHT_TASK_RTOS_PRIORITY = 2;			// Priority of the flight task
 constexpr uint8_t FLIGHT_TASK_QUEUE_DEPTH_OBJS = 10;		// Size of the flight task queue
-constexpr uint16_t FLIGHT_TASK_STACK_DEPTH_WORDS = 256;		// Size of the flight task stack
+constexpr uint16_t FLIGHT_TASK_STACK_DEPTH_WORDS = 512;		// Size of the flight task stack
 
 constexpr uint16_t FLIGHT_PHASE_DISPLAY_FREQ = 1000;	// Display frequency for flight phase information
 
@@ -56,9 +56,9 @@ constexpr uint8_t TASK_BAROMETER_QUEUE_DEPTH_OBJS = 10;		// Size of the baromete
 constexpr uint16_t TASK_BAROMETER_STACK_DEPTH_WORDS = 256;		// Size of the barometer task stack
 
 // IMU TASK (ACCEL/GYRO/MAGNETO)
-constexpr uint8_t TASK_IMU_PRIORITY = 2;			// Priority of the barometer task
-constexpr uint8_t TASK_IMU_QUEUE_DEPTH_OBJS = 10;		// Size of the barometer task queue
-constexpr uint16_t TASK_IMU_STACK_DEPTH_WORDS = 256;		// Size of the barometer task stack
+constexpr uint8_t TELEMETRY_TASK_RTOS_PRIORITY = 2;			// Priority of the barometer task
+constexpr uint8_t TELEMETRY_TASK_QUEUE_DEPTH_OBJS = 10;		// Size of the barometer task queue
+constexpr uint16_t TELEMETRY_TASK_STACK_DEPTH_WORDS = 256;		// Size of the barometer task stack
 
 
 
