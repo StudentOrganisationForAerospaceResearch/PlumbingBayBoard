@@ -19,7 +19,6 @@
 #include "UARTTask.hpp"
 #include "FlightTask.hpp"
 #include "DebugTask.hpp"
-#include "TelemetryTask.hpp"
 
 
 /* Global Variables ------------------------------------------------------------------*/
@@ -34,6 +33,7 @@ void run_main() {
 	FlightTask::Inst().InitTask();
 	UARTTask::Inst().InitTask();
 	DebugTask::Inst().InitTask();
+	PressureTransducerTask::Inst().InitTask();
 	PBBProtocolTask::Inst().InitTask();
 	TelemetryTask::Inst().InitTask();
 

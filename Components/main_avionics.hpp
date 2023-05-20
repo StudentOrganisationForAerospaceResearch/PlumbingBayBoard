@@ -34,8 +34,7 @@ extern UART_HandleTypeDef huart1;   // UART1 - Conduit/Protobuf
 extern UART_HandleTypeDef huart5;   // UART5 - Debug
 
 //ADC Handles
-extern ADC_HandleTypeDef hadc1;      // ADC1 - Combustion Chamber ADC
-extern ADC_HandleTypeDef hadc2;      // ADC2 - Battery
+extern ADC_HandleTypeDef hadc1;      // ADC1 - Pressure Transducer ADC
 
 //I2C Handles
 //extern I2C_HandleTypeDef hi2c1;      // I2C1 -- EEPROM (? - Do we still have an I2C EEPROM)
@@ -61,8 +60,7 @@ namespace SystemHandles {
     constexpr UART_HandleTypeDef* UART_Protocol = &huart1;
     constexpr UART_HandleTypeDef* UART_Debug = &huart5;
 
-    constexpr ADC_HandleTypeDef* ADC_CombustionChamber = &hadc1;
-    constexpr ADC_HandleTypeDef* ADC_Battery = &hadc2;
+	constexpr ADC_HandleTypeDef* ADC_Pressure_Transducer = &hadc1;
 
     constexpr SPI_HandleTypeDef* SPI_IMU = &hspi1;
     constexpr SPI_HandleTypeDef* SPI_Barometer = &hspi3;

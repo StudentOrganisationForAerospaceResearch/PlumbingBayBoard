@@ -7,6 +7,7 @@
 #include "FlightTask.hpp"
 #include "GPIO.hpp"
 #include "SystemDefines.hpp"
+#include "PressureTransducerTask.hpp"
 #include "PBBProtocolTask.hpp"
 
 /**
