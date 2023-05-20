@@ -20,6 +20,7 @@
 #include "DebugTask.hpp"
 #include "Task.hpp"
 #include <time.h>
+#include "PBBProtocolTask.hpp"
 
 
 /* Macros --------------------------------------------------------------------*/
@@ -117,7 +118,7 @@ void PressureTransducerTask::HandleRequestCommand(uint16_t taskCommand)
         SamplePressureTransducer();
         break;
     case PT_REQUEST_TRANSMIT:
-        SOAR_PRINT("Stubbed: Pressure Transducer task transmit not implemented\n");
+    	TransmitProtocolPressureData();
         break;
     case PT_REQUEST_DEBUG:
         //SOAR_PRINT("\t-- Pressure Transducer Data --\n");
@@ -193,4 +194,27 @@ void PressureTransducerTask::SamplePressureTransducer()
 		pressureTransducerValue2 = (250 * (vi * PRESSURE_SCALE) - 125) * 1000; // Multiply by 1000 to keep decimal places
 		data->pressure_2 = (int32_t) pressureTransducerValue2; // Pressure in PSI
 	timestampPT = HAL_GetTick();
+}
+
+/**
+ * @brief Transmits a protocol barometer data sample
+ */
+void PressureTransducerTask::TransmitProtocolPressureData()
+{
+    SOAR_PRINT("Servo State Transmit...\n");
+
+    Proto::TelemetryMessage msg;
+	msg.set_source(Proto::Node::NODE_PBB);
+	msg.set_target(Proto::Node::NODE_DMB);
+//	msg.set_message_id((uint32_t)Proto::MessageID::MSG_TELEMETRY);
+	Proto::PBBPressure pressData;
+	pressData.set_ib_pressure(data->pressure_1);
+	pressData.set_lower_pv_pressure(data->pressure_2);
+	msg.set_presspbb(pressData);
+
+	EmbeddedProto::WriteBufferFixedSize<DEFAULT_PROTOCOL_WRITE_BUFFER_SIZE> writeBuffer;
+	msg.serialize(writeBuffer);
+
+    // Send the barometer data
+    PBBProtocolTask::SendProtobufMessage(writeBuffer, Proto::MessageID::MSG_TELEMETRY);
 }
