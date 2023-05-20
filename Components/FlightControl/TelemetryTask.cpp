@@ -8,6 +8,7 @@
 #include "GPIO.hpp"
 #include "SystemDefines.hpp"
 #include "PBBProtocolTask.hpp"
+#include "MEV.hpp"
 
 //#include "BarometerTask.hpp"
 //#include "IMUTask.hpp"
@@ -89,8 +90,9 @@ void TelemetryTask::RunLogSequence()
 //
 //    // IMU
 //    IMUTask::SendCommand(REQUEST_COMMAND, (uint16_t)IMU_REQUEST_TRANSMIT);
-
+	MEV::TransmitProtocolServoState();
     // Flight State
     //TODO: Commented out for now, until merged with the flight task changes
+
     //FlightTask::SendCommand(REQUEST_COMMAND, (uint16_t)FT_REQUEST_TRANSMIT_STATE)
 }

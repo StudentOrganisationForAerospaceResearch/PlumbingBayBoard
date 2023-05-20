@@ -13,7 +13,8 @@ class MEV {
         static void OpenMEV();
         static void CloseMEV();
 
-        bool GetServoState();
+        static bool GetServoState();
+        static void TransmitProtocolServoState();
 
     private:
         static bool servoState;
