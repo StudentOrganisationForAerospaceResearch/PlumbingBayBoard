@@ -125,10 +125,9 @@ void DebugTask::HandleDebugMessage(const char* msg)
 		GPIO::LED1::On();
 		// TODO: Send to HID task to blink LED, this shouldn't delay
 	}
-	else if (strcmp(msg, "tcc") == 0)
+	else if (strcmp(msg, "tct") == 0)
 	{
 		SOAR_PRINT("Debug 'Thermocouple' Sampling Temperature Reading");
-		ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_NEW_SAMPLE ));
 		ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_DEBUG ));
 	}
 	else {

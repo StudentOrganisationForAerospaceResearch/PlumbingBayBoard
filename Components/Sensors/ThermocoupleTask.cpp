@@ -126,7 +126,7 @@ void ThermocoupleTask::HandleRequestCommand(uint16_t taskCommand)
         break;
     case THERMOCOUPLE_REQUEST_DEBUG: //Temporary data debug sender
         SOAR_PRINT("\t-- Thermocouple Data --\n");
-        ConvertTempuatureData();
+        SampleThermocouple();
         break;
     default:
         SOAR_PRINT("UARTTask - Received Unsupported REQUEST_COMMAND {%d}\n", taskCommand);
