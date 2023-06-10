@@ -141,7 +141,7 @@ void ADC_Select_CH3 (void)
 	  */
 	  sConfig.Channel = ADC_CHANNEL_3;
 	  sConfig.Rank = 1;
-	  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+	  sConfig.SamplingTime = ADC_SAMPLETIME_28CYCLES;
 	  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
 	  {
 	    Error_Handler();
@@ -155,7 +155,7 @@ void ADC_Select_CH15 (void)
 	  */
 	  sConfig.Channel = ADC_CHANNEL_15;
 	  sConfig.Rank = 1;
-	  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+	  sConfig.SamplingTime = ADC_SAMPLETIME_28CYCLES;
 	  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
 	  {
 	    Error_Handler();
