@@ -18,7 +18,7 @@
 #include "main.h"
 #include "DebugTask.hpp"
 #include "Task.hpp"
-
+#include "PBBProtocolTask.hpp"
 
 /* Macros --------------------------------------------------------------------*/
 
@@ -293,6 +293,29 @@ void ThermocoupleTask::SampleThermocouple()
 
 }
 
+
+/**
+ * @brief Transmits a protocol barometer data sample
+ */
+void ThermocoupleTask::TransmitThermocouple()
+{
+    SOAR_PRINT("Thermocouple State Transmit...\n");
+
+    Proto::TelemetryMessage msg;
+	msg.set_source(Proto::Node::NODE_PBB);
+	msg.set_target(Proto::Node::NODE_DMB);
+//	msg.set_message_id((uint32_t)Proto::MessageID::MSG_TELEMETRY);
+	Proto::PBBTemp tempData;
+	tempData.set_ib_temperature(TC1_Temp_Data);
+	tempData.set_pv_temperature(TC1_Internal_Temp_Data);
+	msg.set_temppbb(tempData);
+
+	EmbeddedProto::WriteBufferFixedSize<DEFAULT_PROTOCOL_WRITE_BUFFER_SIZE> writeBuffer;
+	msg.serialize(writeBuffer);
+
+    // Send the barometer data
+    PBBProtocolTask::SendProtobufMessage(writeBuffer, Proto::MessageID::MSG_TELEMETRY);
+}
 
 
 
