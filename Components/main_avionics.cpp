@@ -13,11 +13,14 @@
 #include "stm32f4xx_hal_uart.h"
 #include "Mutex.hpp"
 #include "Command.hpp"
+#include "PBBProtocolTask.hpp"
 
 // Tasks
 #include "UARTTask.hpp"
 #include "FlightTask.hpp"
 #include "DebugTask.hpp"
+#include "PressureTransducerTask.hpp"
+#include "TelemetryTask.hpp"
 #include "ThermocoupleTask.hpp"
 
 /* Global Variables ------------------------------------------------------------------*/
@@ -33,6 +36,9 @@ void run_main() {
 	FlightTask::Inst().InitTask();
 	UARTTask::Inst().InitTask();
 	DebugTask::Inst().InitTask();
+	PressureTransducerTask::Inst().InitTask();
+	PBBProtocolTask::Inst().InitTask();
+	TelemetryTask::Inst().InitTask();
 	ThermocoupleTask::Inst().InitTask();
 
 	// Print System Boot Info : Warning, don't queue more than 10 prints before scheduler starts

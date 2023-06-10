@@ -12,6 +12,8 @@
 #include <cstring>
 
 #include "FlightTask.hpp"
+#include "PressureTransducerTask.hpp"
+#include "PBBProtocolTask.hpp"
 #include "GPIO.hpp"
 #include "stm32f4xx_hal.h"
 #include "ThermocoupleTask.hpp"
@@ -37,6 +39,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
 {
 	if (huart->Instance == SystemHandles::UART_Debug->Instance)
 		DebugTask::Inst().InterruptRxData();
+	else if (huart->Instance == SystemHandles::UART_Protocol->Instance)
+		PBBProtocolTask::Inst().InterruptRxData();
 }
 
 /* Functions -----------------------------------------------------------------*/
@@ -117,6 +121,13 @@ void DebugTask::HandleDebugMessage(const char* msg)
 		// Print message
 		SOAR_PRINT("Debug 'LED blink' command requested\n");
 		GPIO::LED1::On();
+		// TODO: Send to HID task to blink LED, this shouldn't delay
+	}
+	else if (strcmp(msg, "ptc") == 0) {
+		// Print message
+		SOAR_PRINT("Debug 'Pressure Transducer' Sample and Output Received\n");
+		PressureTransducerTask::Inst().SendCommand(Command(REQUEST_COMMAND, PT_REQUEST_NEW_SAMPLE));
+		PressureTransducerTask::Inst().SendCommand(Command(REQUEST_COMMAND, PT_REQUEST_DEBUG));
 		// TODO: Send to HID task to blink LED, this shouldn't delay
 	}
 	else if (strcmp(msg, "tct") == 0)
