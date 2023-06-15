@@ -21,7 +21,9 @@ enum GLOBAL_COMMANDS : uint8_t
 	TASK_SPECIFIC_COMMAND,	// Runs a task specific command when given this object
 	DATA_COMMAND,			// Data command, used to send data to a task. Target is stored in taskCommand
     CONTROL_ACTION,			// Control actions, used in Rocket State Machine, direct translation to RCU<->DMB Protocol
-	REQUEST_COMMAND			// Request command
+	REQUEST_COMMAND,		// Request command
+	PROTOCOL_COMMAND, 		// Protocol command, used for commands to the Protocol Task
+	TELEMETRY_CHANGE_PERIOD
 };
 
 /* Class -----------------------------------------------------------------*/
@@ -44,7 +46,7 @@ public:
 	//~Command();	// We can't handle memory like this, since the object would be 'destroyed' after copying to the RTOS queue
 
 	// Functions
-	bool AllocateData(uint16_t dataSize);	// Dynamically allocates data for the command
+	uint8_t* AllocateData(uint16_t dataSize);	// Dynamically allocates data for the command
 	bool CopyDataToCommand(uint8_t* dataSrc, uint16_t size);	// Copies the data into the command, into newly allocated memory
 	bool SetCommandToStaticExternalBuffer(uint8_t* existingPtr, uint16_t size);	// Set data pointer to a pre-allocated buffer, if bFreeMemory is set to true, responsibility for freeing memory will fall on Command
 
@@ -58,6 +60,7 @@ public:
 
 	// Setters
 	void SetTaskCommand(uint16_t taskCommand) { this->taskCommand = taskCommand; }
+	void SetDataSize(uint16_t size) { dataSize = size; }
 
 
 protected:

@@ -7,6 +7,8 @@
 #include "FlightTask.hpp"
 #include "GPIO.hpp"
 #include "SystemDefines.hpp"
+#include "PressureTransducerTask.hpp"
+#include "PBBProtocolTask.hpp"
 #include "ThermocoupleTask.hpp"
 
 /**
@@ -62,10 +64,25 @@ void FlightTask::Run(void * pvParams)
 
         // Since FlightTask is so critical to managing the system, it may make sense to make this a Async task that handles commands as they come in, and have these display commands be routed over to the DisplayTask
         // or maybe HID (Human Interface Device) task that handles both updating buzzer frequencies and LED states.
-//        GPIO::LED1::On();
-//        osDelay(500);
-//        GPIO::LED1::Off();
-//        osDelay(500);
+        GPIO::LED1::On();
+        osDelay(500);
+        GPIO::LED1::Off();
+        osDelay(500);
+
+        // For testing, generate a PROTOBUF message and send it to the Protocol Task
+		Proto::ControlMessage msg;
+		msg.set_source(Proto::Node::NODE_PBB);
+		msg.set_target(Proto::Node::NODE_DMB);
+		msg.set_message_id(Proto::MessageID::MSG_CONTROL);
+		Proto::SystemState stateMsg;
+		stateMsg.set_sys_state(Proto::SystemState::State::SYS_NORMAL_OPERATION);
+		msg.set_sys_state(stateMsg);
+
+		EmbeddedProto::WriteBufferFixedSize<DEFAULT_PROTOCOL_WRITE_BUFFER_SIZE> writeBuffer;
+		msg.serialize(writeBuffer);
+
+		// Send the control message
+		PBBProtocolTask::SendProtobufMessage(writeBuffer,Proto::MessageID::MSG_CONTROL);
 
     	osDelay(1000);
         //Every cycle, print something out (for testing)
