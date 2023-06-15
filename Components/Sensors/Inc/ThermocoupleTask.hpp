@@ -47,6 +47,7 @@ protected:
     void SampleThermocouple();
     void ConvertTempuatureData();
     uint16_t ReadCalibrationCoefficients(uint8_t PROM_READ_CMD);
+    void TransmitThermocouple();
     //ETHAN NOTE: UNSURE IF I NEEDEDTHIS READCALIBRATION METHOD
 
 

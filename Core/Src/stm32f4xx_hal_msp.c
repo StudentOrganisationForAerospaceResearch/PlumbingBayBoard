@@ -23,9 +23,6 @@
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
-extern DMA_HandleTypeDef hdma_uart5_rx;
-
-extern DMA_HandleTypeDef hdma_uart5_tx;
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
@@ -220,7 +217,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
     PB13     ------> SPI2_SCK
     PB14     ------> SPI2_MISO
     */
-    GPIO_InitStruct.Pin = TC1_SPI_SCK_Pin|TC1_SPI_MISO_Pin;
+    GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_14;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
@@ -244,7 +241,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
     PC10     ------> SPI3_SCK
     PC11     ------> SPI3_MISO
     */
-    GPIO_InitStruct.Pin = TC2_SPI_SCK_Pin|TC2_SPI_MISO_Pin;
+    GPIO_InitStruct.Pin = TC2_SPI_SCK_Pin|GPIO_PIN_11;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
@@ -278,7 +275,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
     PB13     ------> SPI2_SCK
     PB14     ------> SPI2_MISO
     */
-    HAL_GPIO_DeInit(GPIOB, TC1_SPI_SCK_Pin|TC1_SPI_MISO_Pin);
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_13|GPIO_PIN_14);
 
   /* USER CODE BEGIN SPI2_MspDeInit 1 */
 
@@ -296,7 +293,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
     PC10     ------> SPI3_SCK
     PC11     ------> SPI3_MISO
     */
-    HAL_GPIO_DeInit(GPIOC, TC2_SPI_SCK_Pin|TC2_SPI_MISO_Pin);
+    HAL_GPIO_DeInit(GPIOC, TC2_SPI_SCK_Pin|GPIO_PIN_11);
 
   /* USER CODE BEGIN SPI3_MspDeInit 1 */
 
