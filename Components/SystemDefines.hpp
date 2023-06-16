@@ -57,7 +57,7 @@ constexpr uint16_t TASK_PRESSURE_TRANSDUCER_STACK_DEPTH_WORDS = 256;		// Size of
 // THERMOCOUPLE TASK
 constexpr uint8_t TASK_THERMOCOUPLE_PRIORITY = 2;			// Priority of the thermocouple task
 constexpr uint8_t TASK_THERMOCOUPLE_QUEUE_DEPTH_OBJS = 10;		// Size of the thermocouple task queue
-constexpr uint16_t TASK_THERMOCOUPLE_STACK_DEPTH_WORDS = 256;		// Size of the thermocouple task stack
+constexpr uint16_t TASK_THERMOCOUPLE_STACK_DEPTH_WORDS = 348;		// Size of the thermocouple task stack
 
 // IMU TASK (ACCEL/GYRO/MAGNETO)
 constexpr uint8_t TELEMETRY_TASK_RTOS_PRIORITY = 2;			// Priority of the barometer task

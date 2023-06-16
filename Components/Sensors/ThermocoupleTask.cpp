@@ -28,9 +28,10 @@
 /* Structs -------------------------------------------------------------------*/
 
 /* Constants -----------------------------------------------------------------*/
+#define ERROR_TEMPURATURE_VALUE 999
 
 /* Values should not be modified, non-const due to HAL and C++ strictness) ---*/
-constexpr int CMD_TIMEOUT = 150; //TODO: Taken from IMU not sure if it needs to be different
+constexpr int CMD_TIMEOUT = 150;
 
 /* Variables -----------------------------------------------------------------*/
 
@@ -49,7 +50,7 @@ ThermocoupleTask::ThermocoupleTask() : Task(TASK_THERMOCOUPLE_QUEUE_DEPTH_OBJS)
 /**
  * @brief Creates a task for the FreeRTOS Scheduler
  */
-void ThermocoupleTask::InitTask() //TODO: ETHAN NOTE: IDK IF WE ARE STILL DOING THIS
+void ThermocoupleTask::InitTask()
 {
     // Make sure the task is not already initialized
     SOAR_ASSERT(rtTaskHandle == nullptr, "Cannot initialize Thermocouple task twice");
@@ -91,15 +92,11 @@ void ThermocoupleTask::Run(void * pvParams)
  */
 void ThermocoupleTask::HandleCommand(Command& cm)
 {
-
-	//ETHAN NOTE: IDK WHAT TODO IS ABOUT
-    //TODO: Since this task will stall for a few milliseconds, we may need a way to eat the whole queue (combine similar eg. REQUEST commands and eat to WDG command etc)
-    //TODO: Maybe a HandleEvtQueue instead that takes in the whole queue and eats the whole thing in order of non-blocking to blocking
-
     //Switch for the GLOBAL_COMMAND
     switch (cm.GetCommand()) {
     case REQUEST_COMMAND: {
         HandleRequestCommand(cm.GetTaskCommand()); //Sends task specific request command to task request handler
+        break;
     }
     case TASK_SPECIFIC_COMMAND: {
         break; //No task specific commands need
@@ -211,131 +208,145 @@ void ThermocoupleTask::ThermocoupleDebugPrint()
 
 
 
-	/**
-	 * @brief This method receives the voltage reading through spi from the thermocouple readings
-	 */
-	void ThermocoupleTask::SampleThermocouple()
-	{
-		/*DATA FROM MAX31855KASA+T ------------------------------------------------------
+/**
+ * @brief This method receives the voltage reading through spi from the thermocouple readings
+ */
+void ThermocoupleTask::SampleThermocouple()
+{
+	/*DATA FROM MAX31855KASA+T ------------------------------------------------------
 
-		32 bits Memory Map
+	32 bits Memory Map
 
-			D31-D18 : Thermocoupler Temperature Data
+		D31-D18 : Thermocoupler Temperature Data
 
-				D31 : Sign bit
+			D31 : Sign bit
 
-				D30-D18 : Temperature Value (2's complement) from 2^10 to 2^-2
+			D30-D18 : Temperature Value (2's complement) from 2^10 to 2^-2
 
-			D17 : Reserved Bit
+		D17 : Reserved Bit
 
-			D16 : Fault (if high shows fault is detected, more specific fault messages at D2 - D0)
+		D16 : Fault (if high shows fault is detected, more specific fault messages at D2 - D0)
 
-			D15-D4 :  Internal Temperature Data (reference junction temperature)
+		D15-D4 :  Internal Temperature Data (reference junction temperature)
 
-				D15 : Sign bit
+			D15 : Sign bit
 
-				D14-D4 : Temperature Value (2's complement) from 2^6 to 2^-4
+			D14-D4 : Temperature Value (2's complement) from 2^6 to 2^-4
 
-			D3 : Reserved
+		D3 : Reserved
 
-			D2-D0 : Fault Detection Bits
+		D2-D0 : Fault Detection Bits
 
-				D2 : SCV Fault (displays high if TC shorts to Vcc)
+			D2 : SCV Fault (displays high if TC shorts to Vcc)
 
-				D1 : SCG Fault (displays high if TC shorts to GND)
+			D1 : SCG Fault (displays high if TC shorts to GND)
 
-				D0 : Thermocouple has no Connection (displays high)
+			D0 : Thermocouple has no Connection (displays high)
 
-		*///------------------------------------------------------------------------------
+	*///------------------------------------------------------------------------------
 
-		//Storable Data ------------------------------------------------------------------------------
-
-
-		SOAR_PRINT("\n-- Sample Thermocouple Data --\n");
-
-		uint8_t tempDataBuffer5[5] = {0};
-		//See Above bit mem-map
-
-		//Read ---------------------------------------------------------------------------------------
-		HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET);
+	//Storable Data ------------------------------------------------------------------------------
 
 
-	    //Read From Thermocouple 1 first
-		HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
-		HAL_Delay(10);
-		HAL_SPI_Receive(SystemHandles::SPI_Thermocouple1, tempDataBuffer5, 5, 1000); //Fill the data buffer with data from TC1
-		HAL_Delay(10);
-		HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
+	SOAR_PRINT("\n-- Sample Thermocouple Data --\n");
 
-		for(int i = 0; i<5; i++){
-			if(i!=4)
-			dataBuffer1[i] = tempDataBuffer5[i];\
-		}
+	uint8_t tempDataBuffer5[5] = {0};
+	//See Above bit mem-map
 
-		int Temp1=0;
+	//Read ---------------------------------------------------------------------------------------
+	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET);
 
-		if(!(dataBuffer1[1] & 0x01)){ //if there is not an error with TC1 compute temperature
-			if((dataBuffer1[0]&(0x80))>>7==1)  // Negative Temperature
-			{
-				Temp1 = (dataBuffer1[0] << 6) | (dataBuffer1[1] >> 2);
-				Temp1&=0b01111111111111;
-				Temp1^=0b01111111111111;
-				temperature1 = (((double)-Temp1 / 4)*100-320);
-			}
-			else  // Positive Temperature
-			{
-				Temp1 = (dataBuffer1[0] << 6) | (dataBuffer1[1] >> 2);
-				temperature1 = (((double)Temp1 / 4)*100-320);
-			}
-		}
-		else
+
+	//Read From Thermocouple 1 first
+	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
+	HAL_Delay(10);
+	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple1, tempDataBuffer5, 5, 1000); //Fill the data buffer with data from TC1
+	HAL_Delay(10);
+	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
+
+	for(int i = 0; i<5; i++){
+		if(i!=4)
+		dataBuffer1[i] = tempDataBuffer5[i];\
+	}
+
+	int Temp1=0;
+
+	if(!(dataBuffer1[1] & 0x01)){ //if there is not an error with TC1 compute temperature
+		if((dataBuffer1[0]&(0x80))>>7==1)  // Negative Temperature (check if sign bit is 1)
 		{
-			temperature1 = 999; //there is an error detected with TC1
+			//or together the 2 parts of the temperature after multiplying to the correct position
+			//if there is no error read all bits in buffer[0] and [1] will be temperature values
+			Temp1 = (dataBuffer1[0] << 6) | (dataBuffer1[1] >> 2);
+
+			//since the temperature is negative we need to do 2's compliment calculations
+			Temp1^=0b11111111111111; //first XOR all 14 bits of temp data including the sign bit (bits 31-18)
+									 //this will flip the bits
+			Temp1+=0b1; //then add 1
+
+			//here we first divide by 4 as the lower 2 bits are decimal bits, then because of this we scale
+			//the number to fit in an int_16t so it includes the decimal digits and we
+			//also correct the temperature by 3.2C which was the approximate error recorded
+			temperature1 = (((double)-Temp1 / 4)*100-320);
 		}
-
-
-
-		tempDataBuffer5[5] = {0}; //reset for TC2 reading
-		//See Above bit mem-map
-
-		//Read ---------------------------------------------------------------------------------------
-		HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET);
-
-		//Read From Thermocouple 1 first
-		HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
-		HAL_Delay(10);
-		HAL_SPI_Receive(SystemHandles::SPI_Thermocouple1, tempDataBuffer5, 5, 1000); //Fill the data buffer with data from TC1
-		HAL_Delay(10);
-		HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
-
-		for(int i = 0; i<5; i++){
-			if(i!=4)
-			dataBuffer2[i] = tempDataBuffer5[i];
-		}
-
-		int Temp2=0;
-
-		if(!(dataBuffer2[1] & 0x01)){ //if there is not an error with TC1 compute temperature
-			if((dataBuffer2[0]&(0x80))>>7==1)  // Negative Temperature
-			{
-				Temp2 = (dataBuffer2[0] << 6) | (dataBuffer2[1] >> 2);
-				Temp2&=0b01111111111111;
-				Temp2^=0b01111111111111;
-				temperature2 = (((double)-Temp2 / 4)*100-320);
-			}
-			else  // Positive Temperature
-			{
-				Temp2 = (dataBuffer2[0] << 6) | (dataBuffer2[1] >> 2);
-				temperature2 = (((double)Temp2 / 4)*100-320);
-			}
-		}
-		else
+		else  // Positive Temperature
 		{
-			temperature2 = 999; //there is an error detected with TC2
+			//or together the 2 parts of the temperature after multiplying to the correct position
+			//if there is no error read all bits in buffer[0] and [1] will be temperature values
+			Temp1 = (dataBuffer1[0] << 6) | (dataBuffer1[1] >> 2);
+
+			//here we scale the number to fit in an int_16t so it includes the decimal digits and we
+			//also correct the temperature by 3.2C which was the approximate error recorded
+			temperature1 = (((double)Temp1 / 4)*100-320);
 		}
 	}
+	else
+	{
+		temperature1 = ERROR_TEMPURATURE_VALUE; //there is an error detected with TC1
+	}
+
+
+
+	tempDataBuffer5[5] = {0}; //reset for TC2 reading
+	//See Above bit mem-map
+
+	//Read ---------------------------------------------------------------------------------------
+	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET);
+
+	//Read From Thermocouple 1 first
+	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
+	HAL_Delay(10);
+	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple1, tempDataBuffer5, 5, 1000); //Fill the data buffer with data from TC1
+	HAL_Delay(10);
+	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
+
+	for(int i = 0; i<5; i++){
+		if(i!=4)
+		dataBuffer2[i] = tempDataBuffer5[i];
+	}
+
+	int Temp2=0;
+
+	if(!(dataBuffer2[1] & 0x01)){ //if there is not an error with TC1 compute temperature
+		if((dataBuffer2[0]&(0x80))>>7==1)  // Negative Temperature
+		{
+			Temp2 = (dataBuffer2[0] << 6) | (dataBuffer2[1] >> 2);
+			Temp2^=0b11111111111111;
+			Temp2+=0b1;
+			temperature2 = (((double)-Temp2 / 4)*100-320);
+		}
+		else  // Positive Temperature
+		{
+			Temp2 = (dataBuffer2[0] << 6) | (dataBuffer2[1] >> 2);
+			temperature2 = (((double)Temp2 / 4)*100-320);
+		}
+	}
+	else
+	{
+		temperature2 = ERROR_TEMPURATURE_VALUE; //there is an error detected with TC2
+	}
+}
 
 
 

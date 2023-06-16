@@ -36,7 +36,6 @@ public:
 
 protected:
     static void RunTask(void* pvParams) { ThermocoupleTask::Inst().Run(pvParams); } // Static Task Interface, passes control to the instance Run();
-    //ETHAN NOTE: NOT SURE WHAT THE pvParams ARE FOR
 
     void Run(void* pvParams);    // Main run code
 
@@ -47,8 +46,6 @@ protected:
     void TransmitProtocolThermoData();
     void SampleThermocouple();
     void ThermocoupleDebugPrint();
-    uint16_t ReadCalibrationCoefficients(uint8_t PROM_READ_CMD);
-    //ETHAN NOTE: UNSURE IF I NEEDEDTHIS READCALIBRATION METHOD
 
     //Fields
     uint8_t dataBuffer1[4] = {0};
