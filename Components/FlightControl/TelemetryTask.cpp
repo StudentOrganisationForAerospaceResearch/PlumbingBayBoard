@@ -89,7 +89,8 @@ void TelemetryTask::RunLogSequence()
 	// Pressure Transducer
 	PressureTransducerTask::Inst().SendCommand(Command(REQUEST_COMMAND, PT_REQUEST_TRANSMIT));
 
-	MEV::TransmitProtocolServoState();
+    MEV::TransmitProtocolServoState();
+
     // Flight State
     //TODO: Commented out for now, until merged with the flight task changes
 

@@ -16,6 +16,7 @@
 #include "PBBProtocolTask.hpp"
 #include "GPIO.hpp"
 #include "stm32f4xx_hal.h"
+#include "MEV.hpp"
 
 /* Macros --------------------------------------------------------------------*/
 
@@ -128,6 +129,12 @@ void DebugTask::HandleDebugMessage(const char* msg)
 		PressureTransducerTask::Inst().SendCommand(Command(REQUEST_COMMAND, PT_REQUEST_NEW_SAMPLE));
 		PressureTransducerTask::Inst().SendCommand(Command(REQUEST_COMMAND, PT_REQUEST_DEBUG));
 		// TODO: Send to HID task to blink LED, this shouldn't delay
+	}
+	else if (strcmp(msg, "openMEV") == 0) {
+		MEV::OpenMEV();
+	}
+	else if (strcmp(msg, "closeMEV") == 0) {
+		MEV::CloseMEV();
 	}
 	else {
 		// Single character command, or unknown command
