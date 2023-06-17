@@ -28,7 +28,8 @@
 /* Structs -------------------------------------------------------------------*/
 
 /* Constants -----------------------------------------------------------------*/
-#define ERROR_TEMPURATURE_VALUE 999
+#define ERROR_TEMPURATURE_VALUE 9999
+#define TEMPURATURE_OFFSET 6.0 //in C
 
 /* Values should not be modified, non-const due to HAL and C++ strictness) ---*/
 constexpr int CMD_TIMEOUT = 150;
@@ -170,7 +171,7 @@ void ThermocoupleTask::ThermocoupleDebugPrint()
 	//thermo 1 print
 	if(dataBuffer1[1] & 0x01)
 	{								  // Returns Error Number
-		SOAR_PRINT("ERROR on TC1");
+		SOAR_PRINT("ERROR on TC1\n");
 		if(Error1 & 0x01){
 			SOAR_PRINT("Thermocouple 1 is not connected\n");
 		}
@@ -190,7 +191,7 @@ void ThermocoupleTask::ThermocoupleDebugPrint()
 	//thermo 2 print
 	if(dataBuffer2[1] & 0x01)
 	{								  // Returns Error Number
-		SOAR_PRINT("ERROR on TC2");
+		SOAR_PRINT("ERROR on TC2\n");
 		if(Error2 & 0x01){
 			SOAR_PRINT("Thermocouple 2 is not connected\n");
 		}
@@ -269,7 +270,7 @@ void ThermocoupleTask::SampleThermocouple()
 
 	for(int i = 0; i<4; i++){
 		dataBuffer1[i] = tempDataBuffer5[i+1];
-		SOAR_PRINT("dataBuffer2[%d]:%d\n", i, dataBuffer1[i]);
+		//SOAR_PRINT("dataBuffer2[%d]:%d\n", i, dataBuffer1[i]);
 	}
 
 	int Temp1=0;
@@ -289,7 +290,7 @@ void ThermocoupleTask::SampleThermocouple()
 			//here we first divide by 4 as the lower 2 bits are decimal bits, then because of this we scale
 			//the number to fit in an int_16t so it includes the decimal digits and we
 			//also correct the temperature by 3.2C which was the approximate error recorded
-			temperature1 = (((double)-Temp1 / 4)*100-320);
+			temperature1 = (((double)-Temp1 / 4)-TEMPURATURE_OFFSET)*100;
 		}
 		else  // Positive Temperature
 		{
@@ -299,7 +300,7 @@ void ThermocoupleTask::SampleThermocouple()
 
 			//here we scale the number to fit in an int_16t so it includes the decimal digits and we
 			//also correct the temperature by 3.2C which was the approximate error recorded
-			temperature1 = (((double)Temp1 / 4)*100-320);
+			temperature1 = (((double)Temp1 / 4)-TEMPURATURE_OFFSET)*100;
 		}
 	}
 	else
@@ -329,7 +330,7 @@ void ThermocoupleTask::SampleThermocouple()
 
 	for(int i = 0; i<4; i++){
 		dataBuffer2[i] = tempDataBuffer5[i+1];
-		SOAR_PRINT("dataBuffer2[%d]:%d\n", i, dataBuffer2[i]);
+		//SOAR_PRINT("dataBuffer2[%d]:%d\n", i, dataBuffer2[i]);
 	}
 
 	int Temp2=0;
@@ -340,20 +341,20 @@ void ThermocoupleTask::SampleThermocouple()
 			Temp2 = (dataBuffer2[0] << 6) | (dataBuffer2[1] >> 2);
 			Temp2^=0b11111111111111;
 			Temp2+=0b1;
-			temperature2 = (((double)-Temp2 / 4)*100-320);
+			temperature2 = (((double)-Temp2 / 4)-TEMPURATURE_OFFSET)*100;
 		}
 		else  // Positive Temperature
 		{
 			Temp2 = (dataBuffer2[0] << 6) | (dataBuffer2[1] >> 2);
-			temperature2 = (((double)Temp2 / 4)*100-320);
+			temperature2 = (((double)Temp2 / 4)-TEMPURATURE_OFFSET)*100;
 		}
 	}
 	else
 	{
 		temperature2 = ERROR_TEMPURATURE_VALUE; //there is an error detected with TC2
 	}
-	SOAR_PRINT("Thermocouple 1 is reading %d.%d C \n\n", temperature1/100, temperature1%100);
-	SOAR_PRINT("Thermocouple 2 is reading %d.%d C \n\n", temperature2/100, temperature2%100);
+//	SOAR_PRINT("Thermocouple 1 is reading %d.%d C \n\n", temperature1/100, temperature1%100);
+//	SOAR_PRINT("Thermocouple 2 is reading %d.%d C \n\n", temperature2/100, temperature2%100);
 }
 
 

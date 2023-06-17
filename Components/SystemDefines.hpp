@@ -62,7 +62,7 @@ constexpr uint16_t TASK_THERMOCOUPLE_STACK_DEPTH_WORDS = 512;		// Size of the th
 // IMU TASK (ACCEL/GYRO/MAGNETO)
 constexpr uint8_t TELEMETRY_TASK_RTOS_PRIORITY = 2;			// Priority of the barometer task
 constexpr uint8_t TELEMETRY_TASK_QUEUE_DEPTH_OBJS = 10;		// Size of the barometer task queue
-constexpr uint16_t TELEMETRY_TASK_STACK_DEPTH_WORDS = 256;		// Size of the barometer task stack
+constexpr uint16_t TELEMETRY_TASK_STACK_DEPTH_WORDS = 512;		// Size of the barometer task stack
 
 
 
