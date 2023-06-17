@@ -170,6 +170,7 @@ void ThermocoupleTask::ThermocoupleDebugPrint()
 	//thermo 1 print
 	if(dataBuffer1[1] & 0x01)
 	{								  // Returns Error Number
+		SOAR_PRINT("ERROR on TC1");
 		if(Error1 & 0x01){
 			SOAR_PRINT("Thermocouple 1 is not connected\n");
 		}
@@ -189,6 +190,7 @@ void ThermocoupleTask::ThermocoupleDebugPrint()
 	//thermo 2 print
 	if(dataBuffer2[1] & 0x01)
 	{								  // Returns Error Number
+		SOAR_PRINT("ERROR on TC2");
 		if(Error2 & 0x01){
 			SOAR_PRINT("Thermocouple 2 is not connected\n");
 		}
@@ -263,11 +265,11 @@ void ThermocoupleTask::SampleThermocouple()
 	HAL_Delay(10);
 	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple1, tempDataBuffer5, 5, 1000); //Fill the data buffer with data from TC1
 	HAL_Delay(10);
-	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
+	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
 
-	for(int i = 0; i<5; i++){
-		if(i!=4)
-		dataBuffer1[i] = tempDataBuffer5[i];\
+	for(int i = 0; i<4; i++){
+		dataBuffer1[i] = tempDataBuffer5[i+1];
+		SOAR_PRINT("dataBuffer2[%d]:%d\n", i, dataBuffer1[i]);
 	}
 
 	int Temp1=0;
@@ -307,7 +309,11 @@ void ThermocoupleTask::SampleThermocouple()
 
 
 
-	tempDataBuffer5[5] = {0}; //reset for TC2 reading
+	tempDataBuffer5[0] = 0; //reset for TC2 reading
+	tempDataBuffer5[1] = 0; //reset for TC2 reading
+	tempDataBuffer5[2] = 0; //reset for TC2 reading
+	tempDataBuffer5[3] = 0; //reset for TC2 reading
+	tempDataBuffer5[4] = 0; //reset for TC2 reading
 	//See Above bit mem-map
 
 	//Read ---------------------------------------------------------------------------------------
@@ -315,15 +321,15 @@ void ThermocoupleTask::SampleThermocouple()
 	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET);
 
 	//Read From Thermocouple 1 first
-	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
+	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
 	HAL_Delay(10);
-	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple1, tempDataBuffer5, 5, 1000); //Fill the data buffer with data from TC1
+	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple2, tempDataBuffer5, 5, 1000); //Fill the data buffer with data from TC1
 	HAL_Delay(10);
 	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
 
-	for(int i = 0; i<5; i++){
-		if(i!=4)
-		dataBuffer2[i] = tempDataBuffer5[i];
+	for(int i = 0; i<4; i++){
+		dataBuffer2[i] = tempDataBuffer5[i+1];
+		SOAR_PRINT("dataBuffer2[%d]:%d\n", i, dataBuffer2[i]);
 	}
 
 	int Temp2=0;
@@ -346,6 +352,8 @@ void ThermocoupleTask::SampleThermocouple()
 	{
 		temperature2 = ERROR_TEMPURATURE_VALUE; //there is an error detected with TC2
 	}
+	SOAR_PRINT("Thermocouple 1 is reading %d.%d C \n\n", temperature1/100, temperature1%100);
+	SOAR_PRINT("Thermocouple 2 is reading %d.%d C \n\n", temperature2/100, temperature2%100);
 }
 
 
