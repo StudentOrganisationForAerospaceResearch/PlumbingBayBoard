@@ -43,7 +43,7 @@ void FlightTask::InitTask()
  */
 void FlightTask::Run(void * pvParams)
 {
-    //uint32_t tempSecondCounter = 0; // TODO: Temporary counter, would normally be in HeartBeat task or HID Task, unless FlightTask is the HeartBeat task
+    uint32_t tempSecondCounter = 0; // TODO: Temporary counter, would normally be in HeartBeat task or HID Task, unless FlightTask is the HeartBeat task
     GPIO::LED1::Off();
 
     while (1) {
@@ -86,10 +86,7 @@ void FlightTask::Run(void * pvParams)
 
     	osDelay(1000);
         //Every cycle, print something out (for testing)
-        //SOAR_PRINT("FlightTask::Run() - [%d] Seconds\n", tempSecondCounter++);
-//        SOAR_PRINT("\nDebug 'Thermocouple' Sampling Temperature Reading\n");
-//        ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_NEW_SAMPLE ));
-        //ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_DEBUG ));
+        SOAR_PRINT("FlightTask::Run() - [%d] Seconds\n", tempSecondCounter++);
 
         //osDelay(FLIGHT_PHASE_DISPLAY_FREQ);
 
