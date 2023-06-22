@@ -1,12 +1,12 @@
 /**
   ******************************************************************************
-  * File Name          : BarometerTask.cpp
+  * File Name          : ThermocoupleTask.cpp
   *
   * Description        : This file contains constants and functions designed to
   *                      obtain accurate temperature readings from
   *                      the thermocouples on the plumbing bay board. A
   *                      thread task is included that will wait for update and transmit
-  *                      requests for reading and updating the tempurature fields.
+  *                      requests for reading and updating the temperature fields.
   ******************************************************************************
 */
 
