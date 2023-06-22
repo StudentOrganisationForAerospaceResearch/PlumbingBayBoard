@@ -9,6 +9,7 @@
 #include "SystemDefines.hpp"
 #include "PressureTransducerTask.hpp"
 #include "PBBProtocolTask.hpp"
+#include "ThermocoupleTask.hpp"
 
 /**
  * @brief Constructor for FlightTask
@@ -83,6 +84,7 @@ void FlightTask::Run(void * pvParams)
 		// Send the control message
 		PBBProtocolTask::SendProtobufMessage(writeBuffer,Proto::MessageID::MSG_CONTROL);
 
+    	osDelay(1000);
         //Every cycle, print something out (for testing)
         SOAR_PRINT("FlightTask::Run() - [%d] Seconds\n", tempSecondCounter++);
 

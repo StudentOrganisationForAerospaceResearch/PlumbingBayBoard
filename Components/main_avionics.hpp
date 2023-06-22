@@ -40,8 +40,8 @@ extern ADC_HandleTypeDef hadc1;      // ADC1 - Pressure Transducer ADC
 //extern I2C_HandleTypeDef hi2c1;      // I2C1 -- EEPROM (? - Do we still have an I2C EEPROM)
 
 //SPI Handles
-extern SPI_HandleTypeDef hspi1;      // SPI1 - IMU
-extern SPI_HandleTypeDef hspi3;      // SPI3 - Barometer MOSI/MISO/CLK
+extern SPI_HandleTypeDef hspi2;		 // SPI2 - Thermocouple 1 MISO/CLK
+extern SPI_HandleTypeDef hspi3;		 // SPI3 - Thermocouple 2 MISO/CLK
 
 //CRC Handles
 extern CRC_HandleTypeDef hcrc;       // CRC - Hardware CRC System Handle
@@ -62,8 +62,8 @@ namespace SystemHandles {
 
 	constexpr ADC_HandleTypeDef* ADC_Pressure_Transducer = &hadc1;
 
-    constexpr SPI_HandleTypeDef* SPI_IMU = &hspi1;
-    constexpr SPI_HandleTypeDef* SPI_Barometer = &hspi3;
+	constexpr SPI_HandleTypeDef* SPI_Thermocouple1 = &hspi2;
+	constexpr SPI_HandleTypeDef* SPI_Thermocouple2 = &hspi3;
 
     constexpr CRC_HandleTypeDef* CRC_Handle = &hcrc;
 
