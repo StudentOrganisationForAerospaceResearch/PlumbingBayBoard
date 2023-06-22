@@ -136,6 +136,7 @@ void DebugTask::HandleDebugMessage(const char* msg)
 		SOAR_PRINT("Debug 'Thermocouple' Sampling Temperature Reading");
 		ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_NEW_SAMPLE ));
 		ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_DEBUG ));
+	}
 	else if (strcmp(msg, "openMEV") == 0) {
 		MEV::OpenMEV();
 	}
