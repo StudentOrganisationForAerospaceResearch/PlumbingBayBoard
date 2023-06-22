@@ -18,7 +18,6 @@
 #include "DebugTask.hpp"
 #include "Task.hpp"
 #include "PBBProtocolTask.hpp"
-
 #include "TelemetryMessage.hpp"
 #include "PBBProtocolTask.hpp"
 
@@ -228,17 +227,18 @@ int16_t ThermocoupleTask::ExtractTempurature(uint8_t temperatureData[])
 			//here we first divide by 4 as the lower 2 bits are decimal bits, then because of this we scale
 			//the number to fit in an int_16t so it includes the decimal digits and we
 			//also correct the temperature by 3.2C which was the approximate error recorded
-			return (int16_t)(((double)-temperature / 4)-TEMPERATURE_OFFSET)*100;
+			return (int16_t)((((double)-temperature / 4)-TEMPERATURE_OFFSET)*100);
 		}
 		else  // Positive Temperature
 		{
+
 			//or together the 2 parts of the temperature after multiplying to the correct position
 			//if there is no error read all bits in buffer[0] and [1] will be temperature values
 			temperature = (temperatureData[0] << 6) | (temperatureData[1] >> 2);
 
 			//here we scale the number to fit in an int_16t so it includes the decimal digits and we
 			//also correct the temperature by 3.2C which was the approximate error recorded
-			return (int16_t)(((double)temperature / 4)-TEMPERATURE_OFFSET)*100;
+			return (int16_t)((((double)temperature / 4)-TEMPERATURE_OFFSET)*100);
 		}
 	}
 	else
@@ -310,7 +310,7 @@ void ThermocoupleTask::SampleThermocouple()
 
 	temperature1 = ExtractTempurature(dataBuffer1);
 
-	//reset the array to all 0s
+	//reset the buffer array to all 0s
 	memset(tempDataBuffer5, 0, 5);
 
 	//Read ---------------------------------------------------------------------------------------
