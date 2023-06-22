@@ -95,7 +95,8 @@ void TelemetryTask::RunLogSequence()
 	ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_NEW_SAMPLE));
 	ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_TRANSMIT));
 
-	MEV::TransmitProtocolServoState();
+    MEV::TransmitProtocolServoState();
+
     // Flight State
     //TODO: Commented out for now, until merged with the flight task changes
 

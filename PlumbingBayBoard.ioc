@@ -33,6 +33,7 @@ Dma.UART5_TX.1.Priority=DMA_PRIORITY_LOW
 Dma.UART5_TX.1.RequestParameters=Instance,Direction,PeriphInc,MemInc,PeriphDataAlignment,MemDataAlignment,Mode,Priority,FIFOMode
 FREERTOS.IPParameters=Tasks01,configUSE_NEWLIB_REENTRANT
 FREERTOS.Tasks01=defaultTask,0,128,StartDefaultTask,Default,NULL,Dynamic,NULL,NULL
+FREERTOS.configTOTAL_HEAP_SIZE=32768
 FREERTOS.configUSE_NEWLIB_REENTRANT=1
 File.Version=6
 GPIO.groupedBy=Group By Peripherals

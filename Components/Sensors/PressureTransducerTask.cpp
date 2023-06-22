@@ -201,7 +201,7 @@ void PressureTransducerTask::SamplePressureTransducer()
  */
 void PressureTransducerTask::TransmitProtocolPressureData()
 {
-    SOAR_PRINT("Servo State Transmit...\n");
+    SOAR_PRINT("Pressure Transducer Transmit...\n");
 
     Proto::TelemetryMessage msg;
 	msg.set_source(Proto::Node::NODE_PBB);
