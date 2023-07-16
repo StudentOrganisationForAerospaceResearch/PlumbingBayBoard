@@ -43,21 +43,22 @@ constexpr uint16_t FLIGHT_PHASE_DISPLAY_FREQ = 1000;	// Display frequency for fl
 // UART TASK
 constexpr uint8_t UART_TASK_RTOS_PRIORITY = 2;			// Priority of the uart task
 constexpr uint8_t UART_TASK_QUEUE_DEPTH_OBJS = 10;		// Size of the uart task queue
-constexpr uint16_t UART_TASK_STACK_DEPTH_WORDS = 256;	// Size of the uart task stack
+constexpr uint16_t UART_TASK_STACK_DEPTH_WORDS = 512;	// Size of the uart task stack
 
 // DEBUG TASK
 constexpr uint8_t TASK_DEBUG_PRIORITY = 2;			// Priority of the debug task
 constexpr uint8_t TASK_DEBUG_QUEUE_DEPTH_OBJS = 10;		// Size of the debug task queue
-constexpr uint16_t TASK_DEBUG_STACK_DEPTH_WORDS = 256;		// Size of the debug task stack
+constexpr uint16_t TASK_DEBUG_STACK_DEPTH_WORDS = 512;		// Size of the debug task stack
 
 // PRESSURE TRANSDUCER TASK
 constexpr uint8_t TASK_PRESSURE_TRANSDUCER_PRIORITY = 2;			// Priority of the barometer task
 constexpr uint8_t TASK_PRESSURE_TRANSDUCER_QUEUE_DEPTH_OBJS = 10;		// Size of the barometer task queue
-constexpr uint16_t TASK_PRESSURE_TRANSDUCER_STACK_DEPTH_WORDS = 256;		// Size of the barometer task stack
+constexpr uint16_t TASK_PRESSURE_TRANSDUCER_STACK_DEPTH_WORDS = 768;		// Size of the barometer task stack
+
 // THERMOCOUPLE TASK
 constexpr uint8_t TASK_THERMOCOUPLE_PRIORITY = 2;			// Priority of the thermocouple task
 constexpr uint8_t TASK_THERMOCOUPLE_QUEUE_DEPTH_OBJS = 10;		// Size of the thermocouple task queue
-constexpr uint16_t TASK_THERMOCOUPLE_STACK_DEPTH_WORDS = 512;		// Size of the thermocouple task stack
+constexpr uint16_t TASK_THERMOCOUPLE_STACK_DEPTH_WORDS = 768;		// Size of the thermocouple task stack
 
 // IMU TASK (ACCEL/GYRO/MAGNETO)
 constexpr uint8_t TELEMETRY_TASK_RTOS_PRIORITY = 2;			// Priority of the barometer task
