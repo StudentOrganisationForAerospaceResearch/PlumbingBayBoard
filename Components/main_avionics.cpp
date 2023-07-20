@@ -38,7 +38,7 @@ void run_main() {
 	DebugTask::Inst().InitTask();
 	PressureTransducerTask::Inst().InitTask();
 	PBBProtocolTask::Inst().InitTask();
-//	TelemetryTask::Inst().InitTask();
+	TelemetryTask::Inst().InitTask();
 	ThermocoupleTask::Inst().InitTask();
 
 	// Print System Boot Info : Warning, don't queue more than 10 prints before scheduler starts
