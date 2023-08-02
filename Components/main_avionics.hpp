@@ -29,9 +29,6 @@ namespace Global
 
 /* System Handles ------------------------------------------------------------------*/
 /* This should be the only place externs are allowed -------------------------------*/
-//UART Handles
-extern UART_HandleTypeDef huart1;   // UART1 - Conduit/Protobuf
-extern UART_HandleTypeDef huart5;   // UART5 - Debug
 
 //ADC Handles
 extern ADC_HandleTypeDef hadc1;      // ADC1 - Pressure Transducer ADC
@@ -57,8 +54,6 @@ extern TIM_HandleTypeDef htim8; // TIM 8
 
 namespace SystemHandles {
     // Aliases
-    constexpr UART_HandleTypeDef* UART_Protocol = &huart1;
-    constexpr UART_HandleTypeDef* UART_Debug = &huart5;
 
 	constexpr ADC_HandleTypeDef* ADC_Pressure_Transducer = &hadc1;
 
