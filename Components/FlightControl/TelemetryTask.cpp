@@ -14,6 +14,7 @@
 //#include "IMUTask.hpp"
 #include "FlightTask.hpp"
 #include "PressureTransducerTask.hpp"
+#include "ThermocoupleTask.hpp"
 
 /**
  * @brief Constructor for TelemetryTask
@@ -87,7 +88,12 @@ void TelemetryTask::HandleCommand(Command& cm)
 void TelemetryTask::RunLogSequence()
 {
 	// Pressure Transducer
+	PressureTransducerTask::Inst().SendCommand(Command(REQUEST_COMMAND, PT_REQUEST_NEW_SAMPLE));
 	PressureTransducerTask::Inst().SendCommand(Command(REQUEST_COMMAND, PT_REQUEST_TRANSMIT));
+
+	// Thermocouple
+	ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_NEW_SAMPLE));
+	ThermocoupleTask::Inst().SendCommand(Command(REQUEST_COMMAND, THERMOCOUPLE_REQUEST_TRANSMIT));
 
     MEV::TransmitProtocolServoState();
 
@@ -95,4 +101,5 @@ void TelemetryTask::RunLogSequence()
     //TODO: Commented out for now, until merged with the flight task changes
 
     //FlightTask::SendCommand(REQUEST_COMMAND, (uint16_t)FT_REQUEST_TRANSMIT_STATE)
+
 }

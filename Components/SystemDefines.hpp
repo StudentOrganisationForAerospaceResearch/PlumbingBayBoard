@@ -29,6 +29,7 @@
 #include "cmsis_os.h"	// CMSIS RTOS definitions
 #include "main_avionics.hpp"  // Main avionics definitions
 #include "Utils.hpp"	// Utility functions
+#include "UARTDriver.hpp"
 
 /* Task Definitions ------------------------------------------------------------------*/
 /* - Lower priority number means lower priority task ---------------------------------*/
@@ -43,22 +44,27 @@ constexpr uint16_t FLIGHT_PHASE_DISPLAY_FREQ = 1000;	// Display frequency for fl
 // UART TASK
 constexpr uint8_t UART_TASK_RTOS_PRIORITY = 2;			// Priority of the uart task
 constexpr uint8_t UART_TASK_QUEUE_DEPTH_OBJS = 10;		// Size of the uart task queue
-constexpr uint16_t UART_TASK_STACK_DEPTH_WORDS = 256;	// Size of the uart task stack
+constexpr uint16_t UART_TASK_STACK_DEPTH_WORDS = 512;	// Size of the uart task stack
 
 // DEBUG TASK
 constexpr uint8_t TASK_DEBUG_PRIORITY = 2;			// Priority of the debug task
 constexpr uint8_t TASK_DEBUG_QUEUE_DEPTH_OBJS = 10;		// Size of the debug task queue
-constexpr uint16_t TASK_DEBUG_STACK_DEPTH_WORDS = 256;		// Size of the debug task stack
+constexpr uint16_t TASK_DEBUG_STACK_DEPTH_WORDS = 512;		// Size of the debug task stack
 
 // PRESSURE TRANSDUCER TASK
 constexpr uint8_t TASK_PRESSURE_TRANSDUCER_PRIORITY = 2;			// Priority of the barometer task
 constexpr uint8_t TASK_PRESSURE_TRANSDUCER_QUEUE_DEPTH_OBJS = 10;		// Size of the barometer task queue
-constexpr uint16_t TASK_PRESSURE_TRANSDUCER_STACK_DEPTH_WORDS = 256;		// Size of the barometer task stack
+constexpr uint16_t TASK_PRESSURE_TRANSDUCER_STACK_DEPTH_WORDS = 768;		// Size of the barometer task stack
+
+// THERMOCOUPLE TASK
+constexpr uint8_t TASK_THERMOCOUPLE_PRIORITY = 2;			// Priority of the thermocouple task
+constexpr uint8_t TASK_THERMOCOUPLE_QUEUE_DEPTH_OBJS = 10;		// Size of the thermocouple task queue
+constexpr uint16_t TASK_THERMOCOUPLE_STACK_DEPTH_WORDS = 768;		// Size of the thermocouple task stack
 
 // IMU TASK (ACCEL/GYRO/MAGNETO)
 constexpr uint8_t TELEMETRY_TASK_RTOS_PRIORITY = 2;			// Priority of the barometer task
 constexpr uint8_t TELEMETRY_TASK_QUEUE_DEPTH_OBJS = 10;		// Size of the barometer task queue
-constexpr uint16_t TELEMETRY_TASK_STACK_DEPTH_WORDS = 256;		// Size of the barometer task stack
+constexpr uint16_t TELEMETRY_TASK_STACK_DEPTH_WORDS = 512;		// Size of the barometer task stack
 
 
 
@@ -78,7 +84,7 @@ constexpr uint16_t DEBUG_PRINT_MAX_SIZE = 192;			// Max size in bytes of message
 constexpr uint16_t ASSERT_BUFFER_MAX_SIZE = 160;		// Max size in bytes of assert buffers (assume x2 as we have two message segments)
 constexpr uint16_t ASSERT_SEND_MAX_TIME_MS = 250;		// Max time the assert fail is allowed to wait to send header and message to HAL (will take up to 2x this since it sends 2 segments)
 constexpr uint16_t ASSERT_TAKE_MAX_TIME_MS = 500;		// Max time in ms to take the assert semaphore
-constexpr UART_HandleTypeDef* const DEFAULT_ASSERT_UART_HANDLE = SystemHandles::UART_Debug;	// UART Handle that ASSERT messages are sent over
+constexpr UARTDriver* const DEFAULT_ASSERT_UART_DRIVER = UART::Debug;    // UART Handle that ASSERT messages are sent over
 
 /* System Functions ------------------------------------------------------------------*/
 //- Any system functions with an implementation here should be inline, and inline for a good reason (performance)
@@ -124,5 +130,8 @@ inline void soar_free(void* ptr) {
 
 
 /* Other ------------------------------------------------------------------*/
+// Override the new and delete operator to ensure heap4 is used for dynamic memory allocation
+inline void* operator new(size_t size) { return soar_malloc(size); }
+inline void operator delete(void* ptr) { soar_free(ptr); }
 
 #endif // SOAR_MAIN_SYSTEM_DEFINES_H

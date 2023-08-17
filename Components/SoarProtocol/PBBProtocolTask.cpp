@@ -35,7 +35,7 @@ void PBBProtocolTask::InitTask()
 /**
  * @brief Default constructor
  */
-PBBProtocolTask::PBBProtocolTask() : ProtocolTask(Proto::Node::NODE_PBB)
+PBBProtocolTask::PBBProtocolTask() : ProtocolTask(Proto::Node::NODE_PBB, UART::Conduit_DMB, UART_TASK_COMMAND_SEND_RADIO)
 {
 }
 
