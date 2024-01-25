@@ -121,7 +121,8 @@ void ThermocoupleTask::HandleRequestCommand(uint16_t taskCommand)
     	SampleThermocouple();
         break;
     case THERMOCOUPLE_REQUEST_TRANSMIT: //Sending data to PI
-        TransmitProtocolThermoData();
+        //TransmitProtocolThermoData();
+        ThermocoupleDebugPrint();
         break;
     case THERMOCOUPLE_REQUEST_DEBUG: //Output TC data
         ThermocoupleDebugPrint();
@@ -137,7 +138,7 @@ void ThermocoupleTask::HandleRequestCommand(uint16_t taskCommand)
  */
 void ThermocoupleTask::TransmitProtocolThermoData()
 {
-    SOAR_PRINT("Thermocouple Task Transmit...\n");
+    //SOAR_PRINT("Thermocouple Task Transmit...\n");
     //ThermocoupleDebugPrint();
 
     Proto::TelemetryMessage msg;
@@ -181,28 +182,30 @@ void ThermocoupleTask::ThermocoupleDebugPrint()
 	}
 	else
 	{
-		SOAR_PRINT("Thermocouple 1 is reading %d.%d C \n\n" , temperature1/100, temperature1%100);
+	    uint32_t time = TICKS_TO_MS(xTaskGetTickCount());
+	    SOAR_PRINT("TC1,%d,%d.%d,C\n", time, temperature1/100, temperature1%100);
 	}
 
-	//thermo 2 print
-	if(dataBuffer2[1] & 0x01)
-	{								  // Returns Error Number
-		SOAR_PRINT("ERROR on TC2\n");
-		if(Error2 & 0x01){
-			SOAR_PRINT("Thermocouple 2 is not connected\n");
-		}
-		if(Error2 & 0x02){
-			SOAR_PRINT("Thermocouple 2 is shorted to GND\n");
-		}
-		if(Error2 & 0x04){
-			SOAR_PRINT("Thermocouple 2 is shorted to VCC\n");
-		}
-		SOAR_PRINT("\n");
-	}
-	else
-	{
-		SOAR_PRINT("Thermocouple 2 is reading %d.%d C \n\n", temperature2/100, temperature2%100);
-	}
+//	//thermo 2 print
+//	if(dataBuffer2[1] & 0x01)
+//	{								  // Returns Error Number
+//		SOAR_PRINT("ERROR on TC2\n");
+//		if(Error2 & 0x01){
+//			SOAR_PRINT("Thermocouple 2 is not connected\n");
+//		}
+//		if(Error2 & 0x02){
+//			SOAR_PRINT("Thermocouple 2 is shorted to GND\n");
+//		}
+//		if(Error2 & 0x04){
+//			SOAR_PRINT("Thermocouple 2 is shorted to VCC\n");
+//		}
+//		SOAR_PRINT("\n");
+//	}
+//	else
+//	{
+//	    uint32_t time = TICKS_TO_MS(xTaskGetTickCount());
+//		SOAR_PRINT("TC2,%d,%d.%d,C\n", time, temperature2/100, temperature2%100);
+//	}
 }
 
 /**
@@ -288,7 +291,7 @@ void ThermocoupleTask::SampleThermocouple()
 	//Storable Data ------------------------------------------------------------------------------
 
 
-	SOAR_PRINT("\n-- Sample Thermocouple Data --\n");
+	//SOAR_PRINT("\n-- Sample Thermocouple Data --\n");
 
 	uint8_t tempDataBuffer5[5] = {0};
 	//See Above bit mem-map
