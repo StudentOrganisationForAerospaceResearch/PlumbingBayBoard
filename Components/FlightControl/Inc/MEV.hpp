@@ -30,9 +30,9 @@ void MEV::TransmitProtocolServoState()
     Proto::TelemetryMessage msg;
     msg.set_source(Proto::Node::NODE_PBB);
     msg.set_target(Proto::Node::NODE_DMB);
-    Proto::MEVState mevStateInfo;
+    Proto::CombustionControlStatus mevStateInfo;
     mevStateInfo.set_mev_open(MEV::GetServoState());
-	msg.set_mevstate(mevStateInfo);
+	msg.set_combustionControlStatus(mevStateInfo);
 
     EmbeddedProto::WriteBufferFixedSize<DEFAULT_PROTOCOL_WRITE_BUFFER_SIZE> writeBuffer;
     msg.serialize(writeBuffer);

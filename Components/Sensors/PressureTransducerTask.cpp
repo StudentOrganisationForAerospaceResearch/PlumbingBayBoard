@@ -206,11 +206,10 @@ void PressureTransducerTask::TransmitProtocolPressureData()
     Proto::TelemetryMessage msg;
 	msg.set_source(Proto::Node::NODE_PBB);
 	msg.set_target(Proto::Node::NODE_DMB);
-//	msg.set_message_id((uint32_t)Proto::MessageID::MSG_TELEMETRY);
-	Proto::PBBPressure pressData;
+	Proto::PbbPressure pressData;
 	pressData.set_ib_pressure(data->pressure_1);
 	pressData.set_lower_pv_pressure(data->pressure_2);
-	msg.set_presspbb(pressData);
+	msg.set_pbbPressure(pressData);
 
 	EmbeddedProto::WriteBufferFixedSize<DEFAULT_PROTOCOL_WRITE_BUFFER_SIZE> writeBuffer;
 	msg.serialize(writeBuffer);
