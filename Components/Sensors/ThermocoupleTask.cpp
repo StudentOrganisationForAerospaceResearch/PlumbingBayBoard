@@ -75,13 +75,20 @@ void ThermocoupleTask::InitTask()
 void ThermocoupleTask::Run(void * pvParams)
 {
     while (1) {
-        Command cm;
+//        Command cm;
+//
+//        if(qEvtQueue->Receive(cm, 1)){
+//			HandleCommand(cm);
+//		}
+//		else{
+//			BuzzBlinkSequence(currentConfig);
+//		}
 
-        //Wait forever for a command
-        qEvtQueue->ReceiveWait(cm);
+    	SampleThermocouple();
+//    	SOAR_PRINT("hello\n");
 
-        //Process the command
-        HandleCommand(cm);
+
+
     }
 }
 
@@ -163,7 +170,7 @@ void ThermocoupleTask::TransmitProtocolThermoData()
 void ThermocoupleTask::ThermocoupleDebugPrint()
 {
 	uint8_t Error1= dataBuffer1[3]&0x07;
-	uint8_t Error2= dataBuffer2[3]&0x07;
+//	uint8_t Error2= dataBuffer2[3]&0x07;
 
 	//thermo 1 print
 	if(dataBuffer1[1] & 0x01)
@@ -183,7 +190,7 @@ void ThermocoupleTask::ThermocoupleDebugPrint()
 	else
 	{
 	    uint32_t time = TICKS_TO_MS(xTaskGetTickCount());
-	    SOAR_PRINT("TC1,%d,%d.%d,C\n", time, temperature1/100, temperature1%100);
+	    SOAR_PRINT("TC1,%d,%d.%d,C\n", time, ((temperature1/100)+6), temperature1%100);
 	}
 
 //	//thermo 2 print
@@ -303,9 +310,9 @@ void ThermocoupleTask::SampleThermocouple()
 
 	//Read From Thermocouple 1
 	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
-	HAL_Delay(10);
+	HAL_Delay(1);
 	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple1, tempDataBuffer5, 5, THERMOCOUPLE_SPI_TIMEOUT); //Fill the data buffer with data from TC1
-	HAL_Delay(10);
+	HAL_Delay(1);
 	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
 
 	for(int i = 0; i<4; i++){
@@ -314,23 +321,25 @@ void ThermocoupleTask::SampleThermocouple()
 
 	temperature1 = ExtractTempurature(dataBuffer1);
 
-	//reset the buffer array to all 0s
-	memset(tempDataBuffer5, 0, 5);
+	ThermocoupleDebugPrint();
 
-	//Read ---------------------------------------------------------------------------------------
-	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET);
-
-	//Read From Thermocouple 2
-	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
-	HAL_Delay(10);
-	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple2, tempDataBuffer5, 5, THERMOCOUPLE_SPI_TIMEOUT); //Fill the data buffer with data from TC1
-	HAL_Delay(10);
-	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
-
-	for(int i = 0; i<4; i++){
-		dataBuffer2[i] = tempDataBuffer5[i+1];
-	}
-
-	temperature2 = ExtractTempurature(dataBuffer2);
+//	//reset the buffer array to all 0s
+//	memset(tempDataBuffer5, 0, 5);
+//
+//	//Read ---------------------------------------------------------------------------------------
+//	HAL_GPIO_WritePin(TC1_CS__GPIO_Port, TC1_CS__Pin, GPIO_PIN_SET);
+//	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET);
+//
+//	//Read From Thermocouple 2
+//	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_RESET); //begin read with CS pin low
+//	HAL_Delay(10);
+//	HAL_SPI_Receive(SystemHandles::SPI_Thermocouple2, tempDataBuffer5, 5, THERMOCOUPLE_SPI_TIMEOUT); //Fill the data buffer with data from TC1
+//	HAL_Delay(10);
+//	HAL_GPIO_WritePin(TC2_CS__GPIO_Port, TC2_CS__Pin, GPIO_PIN_SET); //end read with setting CS pin to high again
+//
+//	for(int i = 0; i<4; i++){
+//		dataBuffer2[i] = tempDataBuffer5[i+1];
+//	}
+//
+//	temperature2 = ExtractTempurature(dataBuffer2);
 }

@@ -33,12 +33,12 @@ Mutex Global::vaListMutex;
 void run_main() {
 
 	// Init Tasks
-	FlightTask::Inst().InitTask();
+//	FlightTask::Inst().InitTask();
 	UARTTask::Inst().InitTask();
-	DebugTask::Inst().InitTask();
-	PressureTransducerTask::Inst().InitTask();
-	PBBProtocolTask::Inst().InitTask();
-	TelemetryTask::Inst().InitTask();
+//	DebugTask::Inst().InitTask();
+//	PressureTransducerTask::Inst().InitTask();
+//	PBBProtocolTask::Inst().InitTask();
+//	TelemetryTask::Inst().InitTask();
 	ThermocoupleTask::Inst().InitTask();
 
 	// Print System Boot Info : Warning, don't queue more than 10 prints before scheduler starts

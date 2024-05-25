@@ -10,7 +10,7 @@
 #include "Task.hpp"
 #include "SystemDefines.hpp"
 
-#define TELEMETRY_DEFAULT_LOGGING_RATE_MS 500;
+#define TELEMETRY_DEFAULT_LOGGING_RATE_MS 100;
 
 class TelemetryTask : public Task
 {
