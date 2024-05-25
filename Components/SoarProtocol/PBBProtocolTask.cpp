@@ -60,11 +60,11 @@ void PBBProtocolTask::HandleProtobufCommandMessage(EmbeddedProto::ReadBufferFixe
     // Process the db command
     switch (msg.get_pbb_command().get_command_enum())
     {
-    case Proto::PBBCommand::Command::PBB_OPEN_MEV:
-        MEV::OpenMEV();
+    case Proto::PbbCommand::Command::PBB_OPEN_MEV:
+        //MEV::OpenMEV();
         break;
-    case Proto::PBBCommand::Command::PBB_CLOSE_MEV:
-        MEV::CloseMEV();
+    case Proto::PbbCommand::Command::PBB_CLOSE_MEV:
+        //MEV::CloseMEV();
         break;
     default:
         break;
