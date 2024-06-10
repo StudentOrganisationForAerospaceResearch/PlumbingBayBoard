@@ -9,12 +9,13 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
-#include "etl/circular_buffer.h"
+#include <etl/circular_buffer.h>
 #include <FreeRTOS.h>
+#include "SystemDefines.hpp"
 
 
 /* Macros/Enums ------------------------------------------------------------*/
-constexpr uint16_t PT_SLOW_RATE = 5; // 5 Hz
+constexpr uint16_t PT_SLOW_RATE = 4; // 4 Hz
 constexpr uint16_t LOG_BUFFER_SIZE = 10000; // 10000 samples (10s at 1kHz)
 constexpr uint16_t SEND_RATE = 100; // 100 Hz
 
@@ -44,6 +45,10 @@ public:
 
     // Get the data
     PressureLog GetLastLog() { return data; }
+    void PrintLastLog() {
+        SOAR_PRINT("|PT| PV Pressure [1] (PSI): %d.%d\r\n", data.pvPressure / 1000, data.pvPressure % 1000);
+        SOAR_PRINT("|PT| IB Pressure [2] (PSI): %d.%d\r\n", data.ibPressure / 1000, data.ibPressure % 1000);
+    }
 
 private:
     FastLogManager();
@@ -57,7 +62,7 @@ private:
 
     void TransitionSend(); // Transition to the send state
 
-    void TransmitLogData(PressureLog& pl); // Transmits one log data packet
+    void TransmitLogData(PressureLog& pl, uint32_t timestamp); // Transmits one log data packet
 
     void SamplePressureTransducer(); // Samples the pressure transducer
     void TransmitProtocolPressureData(); // Transmits the pressure transducer data

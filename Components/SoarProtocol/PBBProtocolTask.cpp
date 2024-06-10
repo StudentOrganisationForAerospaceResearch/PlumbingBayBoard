@@ -91,7 +91,7 @@ void PBBProtocolTask::HandleProtobufControlMesssage(EmbeddedProto::ReadBufferFix
     SOAR_PRINT("PROTO-INFO: Received PBB Fast Log Command");
 
     // Process the db command
-    switch (msg.get_pbb_command().get_command_enum())
+    switch (msg.get_fast_log().get_cmd())
     {
     case Proto::FastLog::FastLogCommand::FL_PEND:
         FastLogManager::Inst().TransitionPend();
@@ -101,6 +101,9 @@ void PBBProtocolTask::HandleProtobufControlMesssage(EmbeddedProto::ReadBufferFix
         break;
     case Proto::FastLog::FastLogCommand::FL_RESET:
         FastLogManager::Inst().TransitionReset();
+        break;
+    case Proto::FastLog::FastLogCommand::FL_SEND:
+        // Do nothing
         break;
     }
 }

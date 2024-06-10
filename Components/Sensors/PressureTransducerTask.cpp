@@ -115,14 +115,11 @@ void PressureTransducerTask::HandleRequestCommand(uint16_t taskCommand)
 {
     //Switch for task specific command within DATA_COMMAND
     switch (taskCommand) {
-    case PT_REQUEST_NEW_SAMPLE:
-        SamplePressureTransducer();
-        break;
-    case PT_REQUEST_TRANSMIT:
-    	TransmitProtocolPressureData();
+    case PT_REQUEST_DEBUG:
+        FastLogManager::Inst().PrintLastLog();
         break;
     default:
-        SOAR_PRINT("UARTTask - Received Unsupported REQUEST_COMMAND {%d}\n", taskCommand);
+        SOAR_PRINT("PT - Received Unsupported REQUEST_COMMAND {%d}\n", taskCommand);
         break;
     }
 }

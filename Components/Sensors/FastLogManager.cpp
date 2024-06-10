@@ -12,8 +12,7 @@
 #include "Data.h"
 #include "DebugTask.hpp"
 #include "Task.hpp"
-#include <time.h>
-#include "PBBProtocolTask.hpp"
+#include "main.h"
 
 /* Constructor ------------------------------------------------------------------*/
 FastLogManager::FastLogManager()
@@ -53,14 +52,15 @@ void FastLogManager::TransitionSend()
     state = SEND;
 }
 
-void FastLogManager::TransmitLogData(PressureLog& pl) {
+void FastLogManager::TransmitLogData(PressureLog& pl, uint32_t timestamp) {
     Proto::TelemetryMessage msg;
 	msg.set_source(Proto::Node::NODE_PBB);
 	msg.set_target(Proto::Node::NODE_DMB);
-	Proto::FastLog logData;
-    logData.set_ib_pressure(pl.ibPressure);
-    logData.set_pv_pressure(pl.pvPressure);
-    msg.set_pressureLog(logData);
+	Proto::PressureLog plg;
+	plg.set_time(timestamp);
+	plg.set_ib_pressure(pl.ibPressure);
+    plg.set_pv_pressure(pl.pvPressure);
+    msg.set_pressureLog(plg);
 	EmbeddedProto::WriteBufferFixedSize<DEFAULT_PROTOCOL_WRITE_BUFFER_SIZE> writeBuffer;
 	msg.serialize(writeBuffer);
 
@@ -118,14 +118,14 @@ void FastLogManager::Run() {
             if ((++msTick * AUTO_PT_SEND_PERIOD) > AUTO_PT_SLOW_PERIOD) {
                 // Sample and send
                 SamplePressureTransducer();
-                TransmitLogData();
+                TransmitProtocolPressureData();
                 msTick = 0;
             }
 
             // Manage sending the log data
             if(sendIdx < LOG_BUFFER_SIZE) {
                 PressureLog data = pressureLogBuffer[sendIdx];
-                TransmitLogData(data);
+                TransmitLogData(data, sendIdx);
                 sendIdx += 1;
             } else {
                 sendIdx = 0;
@@ -201,7 +201,6 @@ void FastLogManager::SamplePressureTransducer()
 	vi = ((3.3/4095) * (adcVal[1])); // Converts 12 bit ADC value into voltage
 		pressureTransducerValue2 = (250 * (vi * PRESSURE_SCALE) - 125) * 1000; // Multiply by 1000 to keep decimal places
 		data.pvPressure = (int32_t) pressureTransducerValue2; // Pressure in PSI
-	timestampPT = HAL_GetTick();
 }
 
 /**
