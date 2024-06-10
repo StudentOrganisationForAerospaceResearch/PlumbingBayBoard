@@ -10,6 +10,7 @@
 #include "ReadBufferFixedSize.h"
 #include "MEV.hpp"
 #include "GPIO.hpp"
+#include "FastLogManager.hpp"
 
 /**
  * @brief Initialize the PBBProtocolTask
@@ -76,7 +77,32 @@ void PBBProtocolTask::HandleProtobufCommandMessage(EmbeddedProto::ReadBufferFixe
  */
 void PBBProtocolTask::HandleProtobufControlMesssage(EmbeddedProto::ReadBufferFixedSize<PROTOCOL_RX_BUFFER_SZ_BYTES>& readBuffer)
 {
+    Proto::ControlMessage msg;
+    msg.deserialize(readBuffer);
 
+    // Verify the target node
+    if (msg.get_target() != Proto::Node::NODE_PBB)
+        return;
+
+    // If the message does not have a fast log command, do nothing
+    if (!msg.has_fast_log())
+        return;
+
+    SOAR_PRINT("PROTO-INFO: Received PBB Fast Log Command");
+
+    // Process the db command
+    switch (msg.get_pbb_command().get_command_enum())
+    {
+    case Proto::FastLog::FastLogCommand::FL_PEND:
+        FastLogManager::Inst().TransitionPend();
+        break;
+    case Proto::FastLog::FastLogCommand::FL_START:
+        FastLogManager::Inst().TransitionStart();
+        break;
+    case Proto::FastLog::FastLogCommand::FL_RESET:
+        FastLogManager::Inst().TransitionReset();
+        break;
+    }
 }
 
 /**
