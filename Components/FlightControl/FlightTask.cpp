@@ -81,7 +81,7 @@ void FlightTask::Run(void * pvParams)
 		msg.serialize(writeBuffer);
 
 		// Send the control message
-		PBBProtocolTask::SendProtobufMessage(writeBuffer,Proto::MessageID::MSG_CONTROL);
+		PBBProtocolTask::SendProtobufMessage(writeBuffer, Proto::MessageID::MSG_CONTROL);
 
     	osDelay(1000);
         //Every cycle, print something out (for testing)

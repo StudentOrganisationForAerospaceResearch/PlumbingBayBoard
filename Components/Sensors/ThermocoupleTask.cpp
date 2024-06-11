@@ -137,7 +137,7 @@ void ThermocoupleTask::HandleRequestCommand(uint16_t taskCommand)
  */
 void ThermocoupleTask::TransmitProtocolThermoData()
 {
-    SOAR_PRINT("Thermocouple Task Transmit...\n");
+    //SOAR_PRINT("Thermocouple Task Transmit...\n");
     //ThermocoupleDebugPrint();
 
     Proto::TelemetryMessage msg;
@@ -287,7 +287,7 @@ void ThermocoupleTask::SampleThermocouple()
 	//Storable Data ------------------------------------------------------------------------------
 
 
-	SOAR_PRINT("\n-- Sample Thermocouple Data --\n");
+	//SOAR_PRINT("\n-- Sample Thermocouple Data --\n");
 
 	uint8_t tempDataBuffer5[5] = {0};
 	//See Above bit mem-map

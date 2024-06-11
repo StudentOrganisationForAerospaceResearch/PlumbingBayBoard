@@ -33,7 +33,7 @@ Mutex Global::vaListMutex;
 void run_main() {
 
 	// Init Tasks
-	FlightTask::Inst().InitTask();
+	//FlightTask::Inst().InitTask();
 	UARTTask::Inst().InitTask();
 	DebugTask::Inst().InitTask();
 	PressureTransducerTask::Inst().InitTask();

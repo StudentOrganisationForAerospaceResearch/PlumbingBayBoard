@@ -17,7 +17,7 @@
 /* Macros/Enums ------------------------------------------------------------*/
 constexpr uint16_t PT_SLOW_RATE = 4; // 4 Hz
 constexpr uint16_t LOG_BUFFER_SIZE = 10000; // 10000 samples (10s at 1kHz)
-constexpr uint16_t SEND_RATE = 100; // 100 Hz
+constexpr uint16_t SEND_RATE = 125; // 125 Hz
 
 constexpr uint16_t AUTO_PT_SLOW_PERIOD = 1000 / PT_SLOW_RATE;
 constexpr uint16_t AUTO_PT_SEND_PERIOD = 1000 / SEND_RATE;
