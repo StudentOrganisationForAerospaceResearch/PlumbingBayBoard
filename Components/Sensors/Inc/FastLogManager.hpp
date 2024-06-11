@@ -23,8 +23,8 @@ constexpr uint16_t AUTO_PT_SLOW_PERIOD = 1000 / PT_SLOW_RATE;
 constexpr uint16_t AUTO_PT_SEND_PERIOD = 1000 / SEND_RATE;
 /* Structs ------------------------------------------------------------------*/
 struct PressureLog {
-    uint16_t pvPressure;
-    uint16_t ibPressure;
+    int32_t pvPressure;
+    int32_t ibPressure;
 };
 
 /* Class ------------------------------------------------------------------*/
