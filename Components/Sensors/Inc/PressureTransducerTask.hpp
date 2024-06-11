@@ -44,7 +44,6 @@ protected:
     void TransmitProtocolPressureData();
 
     // Data
-    PressureTransducerData* data;
     uint32_t timestampPT;
 
 private:

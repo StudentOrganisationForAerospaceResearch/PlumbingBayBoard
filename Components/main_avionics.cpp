@@ -33,7 +33,7 @@ Mutex Global::vaListMutex;
 void run_main() {
 
 	// Init Tasks
-	FlightTask::Inst().InitTask();
+	//FlightTask::Inst().InitTask();
 	UARTTask::Inst().InitTask();
 	DebugTask::Inst().InitTask();
 	PressureTransducerTask::Inst().InitTask();
@@ -69,6 +69,9 @@ void run_StartDefaultTask()
 {
     SOAR_ASSERT(false, "Default task is not used");
 }
+
+/* FreeRTOS ------------------------------------------------------------------*/
+uint8_t ucHeap [ configTOTAL_HEAP_SIZE ] __attribute__((section(".ccmram")));
 
 
 /* System Functions ------------------------------------------------------------*/
