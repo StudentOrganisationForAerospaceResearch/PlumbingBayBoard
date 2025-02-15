@@ -132,6 +132,12 @@ void DebugTask::HandleDebugMessage(const char* msg)
 	else if (strcmp(msg, "closeMEV") == 0) {
 		MEV::CloseMEV();
 	}
+	else if (strcmp(msg, "startTest") == 0) {
+		SOAR_PRINT("STARTTEST");
+	}
+	else if (strcmp(msg, "endTest") == 0) {
+		SOAR_PRINT("ENDTEST");
+	}
 	else {
 		// Single character command, or unknown command
 		switch (msg[0]) {
