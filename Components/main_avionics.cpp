@@ -35,7 +35,7 @@ void run_main() {
 	// Init Tasks
 //	FlightTask::Inst().InitTask();
 	UARTTask::Inst().InitTask();
-//	DebugTask::Inst().InitTask();
+	DebugTask::Inst().InitTask();
 //	PressureTransducerTask::Inst().InitTask();
 //	PBBProtocolTask::Inst().InitTask();
 //	TelemetryTask::Inst().InitTask();

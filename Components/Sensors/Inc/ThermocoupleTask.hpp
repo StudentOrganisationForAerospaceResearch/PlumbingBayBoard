@@ -10,7 +10,6 @@
 #define SOAR_SENSOR_THERMOCOUPLE_TASK_HPP_
 
 /* Includes ------------------------------------------------------------------*/
-
 #include "Task.hpp"
 #include "SystemDefines.hpp"
 
@@ -19,7 +18,7 @@ enum THERMOCOUPLE_TASK_COMMANDS {
 	THERMOCOUPLE_NULL = 0,
 	THERMOCOUPLE_REQUEST_NEW_SAMPLE,	// Get a new temperature sample
 	THERMOCOUPLE_REQUEST_TRANSMIT,		// Send the current temperature over the Protobuff
-	THERMOCOUPLE_REQUEST_DEBUG       	// Send the current temperature data over the Debug UART
+	THERMOCOUPLE_REQUEST_DEBUG,      	// Send the current temperature data over the Debug UART
 };
 
 /* Class ------------------------------------------------------------------*/
@@ -32,6 +31,12 @@ public:
     }
 
     void InitTask();
+
+    static uint32_t global_time;
+    static uint32_t offset_time;
+
+    static bool test_started; // Flag to indicate if the test has started
+    static bool sample;
 
 protected:
     static void RunTask(void* pvParams) { ThermocoupleTask::Inst().Run(pvParams); } // Static Task Interface, passes control to the instance Run();

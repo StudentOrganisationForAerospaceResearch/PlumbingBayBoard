@@ -32,6 +32,8 @@
 
 /* Values should not be modified, non-const due to HAL and C++ strictness) ---*/
 constexpr int CMD_TIMEOUT = 150;
+uint32_t ThermocoupleTask::global_time =  0;
+uint32_t ThermocoupleTask::offset_time = 0;
 
 /* Variables -----------------------------------------------------------------*/
 
@@ -85,7 +87,6 @@ void ThermocoupleTask::Run(void * pvParams)
 //		}
 
     	SampleThermocouple();
-//    	SOAR_PRINT("hello\n");
 
 
 
@@ -189,8 +190,15 @@ void ThermocoupleTask::ThermocoupleDebugPrint()
 	}
 	else
 	{
-	    uint32_t time = TICKS_TO_MS(xTaskGetTickCount());
-	    SOAR_PRINT("TC1,%d,%d.%d,C\n", time, ((temperature1/100)+6), temperature1%100);
+	    global_time =  TICKS_TO_MS(HAL_GetTick())-offset_time;
+	    if(test_started){
+	    	SOAR_PRINT("TC1,%d.%d,%d.%d,C", (global_time/1000), (global_time%1000), ((temperature1/100)+6), (temperature1%100));
+	    	if(sample){
+				SOAR_PRINT(",1\n");
+			}else{
+				SOAR_PRINT(",0\n");
+			}
+	    }
 	}
 
 //	//thermo 2 print

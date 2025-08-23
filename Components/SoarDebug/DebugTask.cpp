@@ -25,6 +25,8 @@
 
 /* Constants -----------------------------------------------------------------*/
 constexpr uint8_t DEBUG_TASK_PERIOD = 100;
+bool ThermocoupleTask::test_started = false;
+bool ThermocoupleTask::sample = false;
 
 /* Variables -----------------------------------------------------------------*/
 
@@ -51,6 +53,8 @@ void DebugTask::InitTask()
 {
 	// Make sure the task is not already initialized
 	SOAR_ASSERT(rtTaskHandle == nullptr, "Cannot initialize Debug task twice");
+
+	SOAR_PRINT("\n\nDebugTask::InitTask()");
 
 	// Start the task
 	BaseType_t rtValue =
@@ -132,13 +136,24 @@ void DebugTask::HandleDebugMessage(const char* msg)
 	else if (strcmp(msg, "closeMEV") == 0) {
 		MEV::CloseMEV();
 	}
-	else if (strcmp(msg, "startTest") == 0) {
-		SOAR_PRINT("STARTTEST");
+	else if (strcmp(msg, "s") == 0) {
+		ThermocoupleTask::offset_time = TICKS_TO_MS(HAL_GetTick());
+		ThermocoupleTask::test_started = true;
+		ThermocoupleTask::sample = false;
 	}
-	else if (strcmp(msg, "endTest") == 0) {
-		SOAR_PRINT("ENDTEST");
+	else if (strcmp(msg, "i") == 0) {
+		ThermocoupleTask::sample = true;
+	}
+	else if (strcmp(msg, "o") == 0) {
+		ThermocoupleTask::sample = false;
+	}
+	else if (strcmp(msg, "e") == 0) {
+		ThermocoupleTask::offset_time = TICKS_TO_MS(HAL_GetTick());
+		ThermocoupleTask::test_started = false;
+		ThermocoupleTask::sample = false;
 	}
 	else {
+
 		// Single character command, or unknown command
 		switch (msg[0]) {
 		default:
